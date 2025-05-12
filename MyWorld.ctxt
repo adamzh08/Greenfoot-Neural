@@ -1,10 +1,12 @@
 #BlueJ class context
 comment0.target=MyWorld
-comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\ \n\ @author\ (your\ name)\ \n\ @version\ (a\ version\ number\ or\ a\ date)\n
-comment1.params=
-comment1.target=MyWorld()
-comment1.text=\n\ Constructor\ for\ objects\ of\ class\ MyWorld.\n\ \n
+comment0.text=\n\ Write\ a\ description\ of\ class\ MyWorld\ here.\n\n\ @author\ (your\ name)\n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment1.params=loops
+comment1.target=void\ time_avarage(int)
 comment2.params=
-comment2.target=void\ prepare()
-comment2.text=\n\ Prepare\ the\ world\ for\ the\ start\ of\ the\ program.\n\ That\ is\:\ create\ the\ initial\ objects\ and\ add\ them\ to\ the\ world.\n
-numComments=3
+comment2.target=MyWorld()
+comment2.text=\n\ Constructor\ for\ objects\ of\ class\ MyWorld.\n\n
+comment3.params=
+comment3.target=void\ prepare()
+comment3.text=\n\ Prepare\ the\ world\ for\ the\ start\ of\ the\ program.\ That\ is\:\ create\ the\n\ initial\ objects\ and\ add\ them\ to\ the\ world.\n
+numComments=4
