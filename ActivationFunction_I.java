@@ -4,5 +4,5 @@
 @FunctionalInterface
 interface ActivationFunction_I {
 
-    float apply(float input);
+    double apply(double input);
 }

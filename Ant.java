@@ -22,14 +22,14 @@ public class Ant extends Actor {
 
     private static Network network = new Network(layers);
 
-    public float[] position = {0.0f, 0.0f}; // X, Y
+    public double[] position = {0.0f, 0.0f}; // X, Y
 
-    private float[] get_moving_vetor(int amount) {
-        float[] vector = new float[2];
+    private double[] get_moving_vetor(int amount) {
+        double[] vector = new double[2];
 
         for (int i = 0; i < amount; i++) {
-            float[] position = {((Ant) getWorld().getObjects(Ant.class).get(i)).getX() - getX(), ((Ant) getWorld().getObjects(Ant.class).get(i)).getY() - getY()};
-            float[] vector_temp = network.getResult(position);
+            double[] position = {((Ant) getWorld().getObjects(Ant.class).get(i)).getX() - getX(), ((Ant) getWorld().getObjects(Ant.class).get(i)).getY() - getY()};
+            double[] vector_temp = network.getResult(position);
 
             vector[0] += vector_temp[0];
             vector[1] += vector_temp[1];
@@ -48,12 +48,12 @@ public class Ant extends Actor {
     public void act() {
         if (position[0] == 0.0f && position[1] == 0.0f) {
             // Initialize the vector with the current position
-            position[0] = (float) getX();
-            position[1] = (float) getY();
+            position[0] = (double) getX();
+            position[1] = (double) getY();
         }
 
         long start = System.nanoTime();
-        float[] vector_temp = get_moving_vetor(amount_of_ants*amount_of_ants); // Well Hi
+        double[] vector_temp = get_moving_vetor(amount_of_ants*amount_of_ants); // Well Hi
         MyWorld.time += System.nanoTime() - start;
 
         position[0] += vector_temp[0];

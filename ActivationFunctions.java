@@ -5,7 +5,7 @@ public final class ActivationFunctions {
     private ActivationFunctions() {
     }
 
-    public static float linear(float x) {
+    public static double linear(double x) {
         return x;
     }
 
@@ -19,8 +19,8 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return Output in range (0,1)
      */
-    public static float sigmoid(float x) {
-        return 1.0f / (1.0f + (float) Math.exp(-x));
+    public static double sigmoid(double x) {
+        return 1.0f / (1.0f + (double) Math.exp(-x));
     }
 
     /**
@@ -32,8 +32,8 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return Output in range (-1,1)
      */
-    public static float tanh(float x) {
-        return (float) Math.tanh(x);
+    public static double tanh(double x) {
+        return (double) Math.tanh(x);
     }
 
     /**
@@ -46,7 +46,7 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return max(0,x)
      */
-    public static float relu(float x) {
+    public static double relu(double x) {
         return x > 0.0f ? x : 0.0f;
     }
 
@@ -60,7 +60,7 @@ public final class ActivationFunctions {
      * @param alpha Slope for negative values (typically small, e.g., 0.01)
      * @return x if x > 0, alpha * x otherwise
      */
-    public static float lrelu(float x, float alpha) {
+    public static double lrelu(double x, double alpha) {
         return x > 0.0f ? x : alpha * x;
     }
 
@@ -70,7 +70,7 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return x if x > 0, 0.01 * x otherwise
      */
-    public static float lrelu(float x) {
+    public static double lrelu(double x) {
         return lrelu(x, 0.01f);
     }
 
@@ -84,7 +84,7 @@ public final class ActivationFunctions {
      * @param alpha Learnable parameter for negative values
      * @return x if x > 0, alpha * x otherwise
      */
-    public static float prelu(float x, float alpha) {
+    public static double prelu(double x, double alpha) {
         return x > 0.0f ? x : alpha * x;
     }
 
@@ -98,8 +98,8 @@ public final class ActivationFunctions {
      * @param alpha Scale for the negative part
      * @return x if x ≥ 0, alpha * (exp(x) - 1) otherwise
      */
-    public static float elu(float x, float alpha) {
-        return x >= 0.0f ? x : alpha * ((float) Math.exp(x) - 1.0f);
+    public static double elu(double x, double alpha) {
+        return x >= 0.0f ? x : alpha * ((double) Math.exp(x) - 1.0f);
     }
 
     /**
@@ -108,7 +108,7 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return x if x ≥ 0, (exp(x) - 1) otherwise
      */
-    public static float elu(float x) {
+    public static double elu(double x) {
         return elu(x, 1.0f);
     }
 
@@ -121,8 +121,8 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return Exponential of input (partial softmax)
      */
-    public static float softmaxSingle(float x) {
-        return (float) Math.exp(x);
+    public static double softmaxSingle(double x) {
+        return (double) Math.exp(x);
     }
 
     /**
@@ -136,17 +136,17 @@ public final class ActivationFunctions {
      * @param output Array to store results
      * @param size   Length of input/output arrays
      */
-    public static void softmax(float[] input, float[] output, int size) {
-        float maxVal = input[0];
+    public static void softmax(double[] input, double[] output, int size) {
+        double maxVal = input[0];
         for (int i = 1; i < size; i++) {
             if (input[i] > maxVal) {
                 maxVal = input[i];
             }
         }
 
-        float sum = 0.0f;
+        double sum = 0.0f;
         for (int i = 0; i < size; i++) {
-            output[i] = (float) Math.exp(input[i] - maxVal);
+            output[i] = (double) Math.exp(input[i] - maxVal);
             sum += output[i];
         }
 
@@ -165,8 +165,8 @@ public final class ActivationFunctions {
      * @param x Input value
      * @return GELU activation value
      */
-    public static float gelu(float x) {
+    public static double gelu(double x) {
         double sqrt2OverPi = Math.sqrt(2 / Math.PI);
-        return (float) (0.5 * x * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * Math.pow(x, 3)))));
+        return (double) (0.5 * x * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * Math.pow(x, 3)))));
     }
 }

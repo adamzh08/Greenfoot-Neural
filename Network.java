@@ -25,7 +25,7 @@ class Network {
      * dimension: input neuron index (including bias) - Third dimension: output
      * neuron index
      */
-    private float[][][] weights;
+    private double[][][] weights;
 
     /**
      * Creates and initializes a new neural network
@@ -37,14 +37,14 @@ class Network {
         this.size = layers.length;
 
         // Allocate memory for layers
-        this.weights = new float[size - 1][][];
+        this.weights = new double[size - 1][][];
 
         for (int layer = 0; layer < size - 1; layer++) {
             // Add +1 for bias weights
-            this.weights[layer] = new float[layers[layer].getLength() + 1][];
+            this.weights[layer] = new double[layers[layer].getLength() + 1][];
 
             for (int inputNeuron = 0; inputNeuron < layers[layer].getLength() + 1; inputNeuron++) {
-                this.weights[layer][inputNeuron] = new float[layers[layer + 1].getLength()];
+                this.weights[layer][inputNeuron] = new double[layers[layer + 1].getLength()];
             }
         }
 
@@ -70,11 +70,11 @@ class Network {
 
         for (int layer = 0; layer < size - 1; layer++) {
             // Xavier/Glorot initialization
-            float scale = (float) Math.sqrt(2.0f / (layers[layer].getLength() + layers[layer + 1].getLength()));
+            double scale = (double) Math.sqrt(2.0f / (layers[layer].getLength() + layers[layer + 1].getLength()));
 
             for (int i = 0; i < layers[layer].getLength() + 1; i++) {
                 for (int j = 0; j < layers[layer + 1].getLength(); j++) {
-                    float r = (random.nextFloat() * 2.0f - 1.0f);
+                    double r = (random.nextDouble() * 2.0f - 1.0f);
                     weights[layer][i][j] = r * scale;
                 }
             }
@@ -99,7 +99,7 @@ class Network {
                 // Write weights for this layer
                 for (int i = 0; i < layers[layer].getLength() + 1; i++) {
                     for (int j = 0; j < layers[layer + 1].getLength(); j++) {
-                        dos.writeFloat(weights[layer][i][j]);
+                        dos.writeDouble(weights[layer][i][j]);
                     }
                 }
             }
@@ -147,7 +147,7 @@ class Network {
                 // Read weights
                 for (int i = 0; i < layers[layer].getLength() + 1; i++) {
                     for (int j = 0; j < layers[layer + 1].getLength(); j++) {
-                        weights[layer][i][j] = dis.readFloat();
+                        weights[layer][i][j] = dis.readDouble();
                     }
                 }
             }
@@ -170,12 +170,12 @@ class Network {
      * @param input Array of input values
      * @return Array containing output layer activations
      */
-    public float[] getResult(float[] input) {
-        float[] currentLayerActivations = new float[layers[0].getLength()];
+    public double[] getResult(double[] input) {
+        double[] currentLayerActivations = new double[layers[0].getLength()];
         System.arraycopy(input, 0, currentLayerActivations, 0, layers[0].getLength());
 
         for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
-            float[] nextLayerActivations = new float[layers[layerIdx + 1].getLength()];
+            double[] nextLayerActivations = new double[layers[layerIdx + 1].getLength()];
 
             // Forward propagation
             for (int inputNeuron = 0; inputNeuron < layers[layerIdx].getLength(); inputNeuron++) {
@@ -198,7 +198,7 @@ class Network {
 
             if (layerIdx == size - 2 && isSoftmax) {
                 // Find max for numerical stability
-                float maxActivation = nextLayerActivations[0];
+                double maxActivation = nextLayerActivations[0];
                 for (int i = 1; i < layers[layerIdx + 1].getLength(); i++) {
                     if (nextLayerActivations[i] > maxActivation) {
                         maxActivation = nextLayerActivations[i];
@@ -206,9 +206,9 @@ class Network {
                 }
 
                 // Calculate exp(x - max) and sum
-                float expSum = 0.0f;
+                double expSum = 0.0f;
                 for (int i = 0; i < layers[layerIdx + 1].getLength(); i++) {
-                    nextLayerActivations[i] = (float) Math.exp(nextLayerActivations[i] - maxActivation);
+                    nextLayerActivations[i] = (double) Math.exp(nextLayerActivations[i] - maxActivation);
                     expSum += nextLayerActivations[i];
                 }
 
@@ -238,7 +238,7 @@ class Network {
      * @param input Input value
      * @return Output value (not actually used by softmax implementation)
      */
-    private float softmaxSingle(float input) {
+    private double softmaxSingle(double input) {
         // This is a placeholder - the actual softmax is computed for the entire layer
         return ActivationFunctions.softmaxSingle(input);
     }
@@ -253,7 +253,7 @@ class Network {
         // In Java we can't directly compare function references, so we'll use a specific method
         // For this example, we'll check if the function has the same behavior as our softmax function
         // by using a simple test value
-        float testValue = 1.0f;
+        double testValue = 1.0f;
         return Math.abs(func.apply(testValue) - ActivationFunctions.softmaxSingle(testValue)) < 0.0001f;
     }
 }

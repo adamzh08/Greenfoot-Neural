@@ -2,5 +2,5 @@
 comment0.target=ActivationFunction_I
 comment0.text=\r\n\ Functional\ interface\ for\ activation\ functions\r\n
 comment1.params=input
-comment1.target=float\ apply(float)
+comment1.target=double\ apply(double)
 numComments=2

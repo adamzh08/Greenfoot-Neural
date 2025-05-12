@@ -2,7 +2,7 @@
 comment0.target=Ant
 comment0.text=\r\n\ Write\ a\ description\ of\ class\ ant\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
 comment1.params=amount
-comment1.target=float[]\ get_moving_vetor(int)
+comment1.target=double[]\ get_moving_vetor(int)
 comment2.params=
 comment2.target=void\ resetPosition()
 comment3.params=
