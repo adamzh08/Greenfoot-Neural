@@ -14,6 +14,14 @@ public class MyWorld extends World
     public static int screenWidth = 1200;
     public static int screenHeight = 800;
 
+    public static long time = 0;
+
+    public static void time_avarage()
+    {
+        time = time / 10;
+        System.out.println("Time: " + time);
+    }
+
     /**
      * Constructor for objects of class MyWorld.
      * 

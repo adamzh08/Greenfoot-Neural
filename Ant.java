@@ -52,7 +52,9 @@ public class Ant extends Actor {
             position[1] = (float) getY();
         }
         
+        long start = System.nanoTime();
         float[] vector_temp = get_moving_vetor(amount_of_ants*amount_of_ants); // Well Hi
+        MyWorld.time += System.nanoTime() - start;
 
         position[0] += vector_temp[0];
         position[1] += vector_temp[1];

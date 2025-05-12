@@ -1,13 +1,13 @@
 #BlueJ class context
 comment0.target=Layer
-comment0.text=\r\n\ Represents\ a\ single\ layer\ in\ the\ neural\ network\r\n
+comment0.text=\n\ Represents\ a\ single\ layer\ in\ the\ neural\ network\n
 comment1.params=length\ activation
 comment1.target=Layer(int,\ ActivationFunction)
-comment1.text=\r\n\ Constructor\ for\ a\ neural\ network\ layer\r\n\r\n\ @param\ length\ Number\ of\ neurons\ in\ this\ layer\r\n\ @param\ activation\ Activation\ function\ used\ in\ this\ layer\r\n
+comment1.text=\n\ Constructor\ for\ a\ neural\ network\ layer\n\n\ @param\ length\ Number\ of\ neurons\ in\ this\ layer\n\ @param\ activation\ Activation\ function\ used\ in\ this\ layer\n
 comment2.params=
 comment2.target=int\ getLength()
-comment2.text=\r\n\ @return\ Number\ of\ neurons\ in\ this\ layer\r\n
+comment2.text=\n\ @return\ Number\ of\ neurons\ in\ this\ layer\n
 comment3.params=
 comment3.target=ActivationFunction\ getActivation()
-comment3.text=\r\n\ @return\ Activation\ function\ used\ in\ this\ layer\r\n
+comment3.text=\n\ @return\ Activation\ function\ used\ in\ this\ layer\n
 numComments=4

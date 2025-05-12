@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Ant
+comment0.text=\n\ Write\ a\ description\ of\ class\ ant\ here.\n\n\ @author\ (your\ name)\n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment1.params=amount
+comment1.target=float[]\ get_moving_vetor(int)
+comment2.params=
+comment2.target=void\ resetPosition()
+comment3.params=
+comment3.target=void\ act()
+numComments=4
