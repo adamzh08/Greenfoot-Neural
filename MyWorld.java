@@ -30,11 +30,11 @@ public class MyWorld extends World
      */
     private void prepare()
     {    
-        ant[] ants_array = new ant[amount_of_ants*amount_of_ants];
+        Ant[] ants_array = new Ant[amount_of_ants*amount_of_ants];
         
         for(int i = 0; i < amount_of_ants*amount_of_ants; i++)
         {
-            ants_array[i] = new ant();
+            ants_array[i] = new Ant();
             addObject(ants_array[i], (int)((screenWidth/amount_of_ants)*(int)(i/amount_of_ants)), (int)((screenHeight/amount_of_ants)*(i%amount_of_ants)));
             //addObject(ants_array[i], 10, 10);
         }
