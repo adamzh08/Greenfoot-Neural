@@ -1,232 +1,10 @@
+import java.util.*;
 import java.io.*;
-import java.util.Random;
-
-/**
- * Represents a single layer in the neural network
- */
-class Layer {
-
-    /**
-     * Number of neurons in this layer
-     */
-    private int length;
-
-    /**
-     * Activation function used in this layer
-     */
-    private ActivationFunction activation;
-
-    /**
-     * Constructor for a neural network layer
-     *
-     * @param length Number of neurons in this layer
-     * @param activation Activation function used in this layer
-     */
-    public Layer(int length, ActivationFunction activation) {
-        this.length = length;
-        this.activation = activation;
-    }
-
-    /**
-     * @return Number of neurons in this layer
-     */
-    public int getLength() {
-        return length;
-    }
-
-    /**
-     * @return Activation function used in this layer
-     */
-    public ActivationFunction getActivation() {
-        return activation;
-    }
-}
-
-/**
- * Functional interface for activation functions
- */
-@FunctionalInterface
-interface ActivationFunction {
-
-    float apply(float input);
-}
-
-/**
- * Collection of activation functions for neural networks
- */
-class ActivationFunctions {
-
-    public static float linear(float x) {
-        return x;
-    }
-
-    /**
-     * Sigmoid activation function
-     *
-     * Characteristics: - Smooth, continuous function - Output range: (0,1) -
-     * Commonly used in binary classification - Can cause vanishing gradient
-     * problems
-     *
-     * @param x Input value
-     * @return Output in range (0,1)
-     */
-    public static float sigmoid(float x) {
-        return 1.0f / (1.0f + (float) Math.exp(-x));
-    }
-
-    /**
-     * Hyperbolic tangent activation function
-     *
-     * Characteristics: - Zero-centered output - Output range: (-1,1) - Stronger
-     * gradients than sigmoid - Still can have vanishing gradient issues
-     *
-     * @param x Input value
-     * @return Output in range (-1,1)
-     */
-    public static float tanh(float x) {
-        return (float) Math.tanh(x);
-    }
-
-    /**
-     * Rectified Linear Unit (ReLU) activation function
-     *
-     * Characteristics: - Simple and computationally efficient - No vanishing
-     * gradient for positive values - Can cause "dying ReLU" problem - Most
-     * commonly used activation in modern networks
-     *
-     * @param x Input value
-     * @return max(0,x)
-     */
-    public static float relu(float x) {
-        return x > 0.0f ? x : 0.0f;
-    }
-
-    /**
-     * Leaky ReLU activation function
-     *
-     * Characteristics: - Prevents dying ReLU problem - Small gradient for
-     * negative values - No vanishing gradient
-     *
-     * @param x Input value
-     * @param alpha Slope for negative values (typically small, e.g., 0.01)
-     * @return x if x > 0, alpha * x otherwise
-     */
-    public static float lrelu(float x, float alpha) {
-        return x > 0.0f ? x : alpha * x;
-    }
-
-    /**
-     * Leaky ReLU with default alpha value
-     *
-     * @param x Input value
-     * @return x if x > 0, 0.01 * x otherwise
-     */
-    public static float lrelu(float x) {
-        return lrelu(x, 0.01f);
-    }
-
-    /**
-     * Parametric ReLU activation function
-     *
-     * Characteristics: - Similar to Leaky ReLU but with learnable alpha - More
-     * flexible than standard ReLU - Requires additional parameter training
-     *
-     * @param x Input value
-     * @param alpha Learnable parameter for negative values
-     * @return x if x > 0, alpha * x otherwise
-     */
-    public static float prelu(float x, float alpha) {
-        return x > 0.0f ? x : alpha * x;
-    }
-
-    /**
-     * Exponential Linear Unit activation function
-     *
-     * Characteristics: - Smooth function including at x=0 - Can produce
-     * negative values - Better handling of noise - Self-regularizing
-     *
-     * @param x Input value
-     * @param alpha Scale for the negative part
-     * @return x if x ≥ 0, alpha * (exp(x) - 1) otherwise
-     */
-    public static float elu(float x, float alpha) {
-        return x >= 0.0f ? x : alpha * ((float) Math.exp(x) - 1.0f);
-    }
-
-    /**
-     * ELU with default alpha value
-     *
-     * @param x Input value
-     * @return x if x ≥ 0, (exp(x) - 1) otherwise
-     */
-    public static float elu(float x) {
-        return elu(x, 1.0f);
-    }
-
-    /**
-     * Single-input softmax for network structure
-     *
-     * Note: This is only part of the softmax calculation. Full normalization
-     * happens in the network forward pass.
-     *
-     * @param x Input value
-     * @return Exponential of input (partial softmax)
-     */
-    public static float softmaxSingle(float x) {
-        return (float) Math.exp(x);
-    }
-
-    /**
-     * Softmax activation function for entire layer
-     *
-     * Characteristics: - Converts inputs to probability distribution - Outputs
-     * sum to 1.0 - Commonly used in classification - Numerically stable
-     * implementation
-     *
-     * @param input Array of input values
-     * @param output Array to store results
-     * @param size Length of input/output arrays
-     */
-    public static void softmax(float[] input, float[] output, int size) {
-        float maxVal = input[0];
-        for (int i = 1; i < size; i++) {
-            if (input[i] > maxVal) {
-                maxVal = input[i];
-            }
-        }
-
-        float sum = 0.0f;
-        for (int i = 0; i < size; i++) {
-            output[i] = (float) Math.exp(input[i] - maxVal);
-            sum += output[i];
-        }
-
-        for (int i = 0; i < size; i++) {
-            output[i] /= sum;
-        }
-    }
-
-    /**
-     * Gaussian Error Linear Unit (GELU) activation
-     *
-     * Characteristics: - Smooth approximation of ReLU - Used in modern
-     * transformers - Combines properties of dropout and ReLU - More
-     * computationally expensive
-     *
-     * @param x Input value
-     * @return GELU activation value
-     */
-    public static float gelu(float x) {
-        double sqrt2OverPi = Math.sqrt(2 / Math.PI);
-        return (float) (0.5 * x * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * Math.pow(x, 3)))));
-    }
-}
 
 /**
  * Represents the entire neural network structure
  */
 class Network {
-
     /**
      * Array of layer configurations
      */
@@ -413,7 +191,7 @@ class Network {
             }
 
             // Special handling for softmax in the output layer
-            ActivationFunction activation = layers[layerIdx + 1].getActivation();
+            ActivationFunction_I activation = layers[layerIdx + 1].getActivation();
             // Check if this layer uses softmax activation by comparing it with a reference
             // Since we can't directly compare function references, we'll use a named reference
             boolean isSoftmax = isSoftmaxActivation(activation);
@@ -471,7 +249,7 @@ class Network {
      * @param func Activation function to check
      * @return true if the function is softmax, false otherwise
      */
-    private boolean isSoftmaxActivation(ActivationFunction func) {
+    private boolean isSoftmaxActivation(ActivationFunction_I func) {
         // In Java we can't directly compare function references, so we'll use a specific method
         // For this example, we'll check if the function has the same behavior as our softmax function
         // by using a simple test value
@@ -479,52 +257,3 @@ class Network {
         return Math.abs(func.apply(testValue) - ActivationFunctions.softmaxSingle(testValue)) < 0.0001f;
     }
 }
-
-/**
- * Example usage of the neural network implementation
- */
-/*
-public class NeuralNetworkExample {
-    public static void main(String[] args) {
-        // Create a simple network: 3 inputs -> 4 hidden -> 2 outputs
-        // Using different activation functions for each layer
-        Layer[] layers = {
-            new Layer(3, ActivationFunctions::relu),
-            new Layer(4, ActivationFunctions::sigmoid),
-            new Layer(2, ActivationFunctions::softmaxSingle)
-        };
-        
-        // Initialize network
-        // This will automatically:
-        // 1. Check if weights.bin exists
-        // 2. If it exists - load weights from it
-        // 3. If not - randomize weights and save them to weights.bin
-        Network network = new Network(layers);
-        
-        // Example forward pass
-        float[] input = {0.5f, 0.3f, 0.7f};
-        float[] output = network.getResult(input);
-        
-        // Print results
-        System.out.println("Output:");
-        for (float value : output) {
-            System.out.println(value);
-        }
-        
-        // Demonstrate other activation functions
-        System.out.println("\nActivation Function Examples:");
-        float testValue = -0.5f;
-        System.out.println("Input value: " + testValue);
-        System.out.println("Sigmoid: " + ActivationFunctions.sigmoid(testValue));
-        System.out.println("Tanh: " + ActivationFunctions.tanh(testValue));
-        System.out.println("ReLU: " + ActivationFunctions.relu(testValue));
-        System.out.println("Leaky ReLU: " + ActivationFunctions.lrelu(testValue));
-        System.out.println("ELU: " + ActivationFunctions.elu(testValue));
-        System.out.println("GELU: " + ActivationFunctions.gelu(testValue));
-        
-        // No need to save weights here since:
-        // 1. If weights.bin didn't exist, they were already saved in the constructor
-        // 2. If weights.bin did exist, we don't want to overwrite it
-    }
-}
-*/
