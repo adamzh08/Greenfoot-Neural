@@ -7,7 +7,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name)
  * @version (a version number or a date)
  */
-public class ant extends Actor {
+public class Ant extends Actor {
 
     /**
      * Act - do whatever the ant wants to do. This method is called whenever the
@@ -28,7 +28,7 @@ public class ant extends Actor {
         float[] vector = new float[2];
 
         for (int i = 0; i < amount; i++) {
-            float[] position = {((ant) getWorld().getObjects(ant.class).get(i)).getX() - getX(), ((ant) getWorld().getObjects(ant.class).get(i)).getY() - getY()};
+            float[] position = {((Ant) getWorld().getObjects(Ant.class).get(i)).getX() - getX(), ((Ant) getWorld().getObjects(Ant.class).get(i)).getY() - getY()};
             float[] vector_temp = network.getResult(position);
 
             vector[0] += vector_temp[0];
