@@ -41,11 +41,9 @@ class Network {
 
         for (int layer = 0; layer < size - 1; layer++) {
             // Add +1 for bias weights
-            this.weights[layer] = new double[layers[layer].getLength() + 1][];
-
-            for (int inputNeuron = 0; inputNeuron < layers[layer].getLength() + 1; inputNeuron++) {
-                this.weights[layer][inputNeuron] = new double[layers[layer + 1].getLength()];
-            }
+            this.weights[layer] = new double
+            [layers[layer].length() + 1]
+            [layers[layer + 1].length()];
         }
 
         // Check if weights file exists, if it does - load weights
@@ -70,10 +68,10 @@ class Network {
 
         for (int layer = 0; layer < size - 1; layer++) {
             // Xavier/Glorot initialization
-            double scale = (double) Math.sqrt(2.0f / (layers[layer].getLength() + layers[layer + 1].getLength()));
+            double scale = (double) Math.sqrt(2.0f / (layers[layer].length() + layers[layer + 1].length()));
 
-            for (int i = 0; i < layers[layer].getLength() + 1; i++) {
-                for (int j = 0; j < layers[layer + 1].getLength(); j++) {
+            for (int i = 0; i < layers[layer].length() + 1; i++) {
+                for (int j = 0; j < layers[layer + 1].length(); j++) {
                     double r = (random.nextDouble() * 2.0f - 1.0f);
                     weights[layer][i][j] = r * scale;
                 }
@@ -93,12 +91,12 @@ class Network {
 
             // For each layer, write dimensions
             for (int layer = 0; layer < size - 1; layer++) {
-                dos.writeInt(layers[layer].getLength() + 1); // +1 for bias
-                dos.writeInt(layers[layer + 1].getLength());
+                dos.writeInt(layers[layer].length() + 1); // +1 for bias
+                dos.writeInt(layers[layer + 1].length());
 
                 // Write weights for this layer
-                for (int i = 0; i < layers[layer].getLength() + 1; i++) {
-                    for (int j = 0; j < layers[layer + 1].getLength(); j++) {
+                for (int i = 0; i < layers[layer].length() + 1; i++) {
+                    for (int j = 0; j < layers[layer + 1].length(); j++) {
                         dos.writeDouble(weights[layer][i][j]);
                     }
                 }
@@ -138,15 +136,15 @@ class Network {
                 int outputSize = dis.readInt();
 
                 // Verify dimensions
-                if (inputSize != layers[layer].getLength() + 1
-                        || outputSize != layers[layer + 1].getLength()) {
+                if (inputSize != layers[layer].length() + 1
+                || outputSize != layers[layer + 1].length()) {
                     System.err.println("Saved layer dimensions don't match current network.");
                     return false;
                 }
 
                 // Read weights
-                for (int i = 0; i < layers[layer].getLength() + 1; i++) {
-                    for (int j = 0; j < layers[layer + 1].getLength(); j++) {
+                for (int i = 0; i < layers[layer].length() + 1; i++) {
+                    for (int j = 0; j < layers[layer + 1].length(); j++) {
                         weights[layer][i][j] = dis.readDouble();
                     }
                 }
@@ -171,57 +169,31 @@ class Network {
      * @return Array containing output layer activations
      */
     public double[] getResult(double[] input) {
-        double[] currentLayerActivations = new double[layers[0].getLength()];
-        System.arraycopy(input, 0, currentLayerActivations, 0, layers[0].getLength());
+        // removed clone, since currentLayerActivations is not mutated
+        double[] currentLayerActivations = input;
 
         for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
-            double[] nextLayerActivations = new double[layers[layerIdx + 1].getLength()];
+            double[] nextLayerActivations = new double[layers[layerIdx + 1].length()];
 
             // Forward propagation
-            for (int inputNeuron = 0; inputNeuron < layers[layerIdx].getLength(); inputNeuron++) {
-                for (int outputNeuron = 0; outputNeuron < layers[layerIdx + 1].getLength(); outputNeuron++) {
+            for (int inputNeuron = 0; inputNeuron < layers[layerIdx].length(); inputNeuron++) {
+                for (int outputNeuron = 0; outputNeuron < layers[layerIdx + 1].length(); outputNeuron++) {
                     nextLayerActivations[outputNeuron] += currentLayerActivations[inputNeuron]
-                            * weights[layerIdx][inputNeuron][outputNeuron];
+                    * weights[layerIdx][inputNeuron][outputNeuron];
                 }
             }
 
             // Add bias terms
-            for (int outputNeuron = 0; outputNeuron < layers[layerIdx + 1].getLength(); outputNeuron++) {
-                nextLayerActivations[outputNeuron] += weights[layerIdx][layers[layerIdx].getLength()][outputNeuron];
+            for (int outputNeuron = 0; outputNeuron < layers[layerIdx + 1].length(); outputNeuron++) {
+                nextLayerActivations[outputNeuron] += weights[layerIdx][layers[layerIdx].length()][outputNeuron];
             }
 
-            // Special handling for softmax in the output layer
-            ActivationFunction_I activation = layers[layerIdx + 1].getActivation();
-            // Check if this layer uses softmax activation by comparing it with a reference
-            // Since we can't directly compare function references, we'll use a named reference
-            boolean isSoftmax = isSoftmaxActivation(activation);
-
-            if (layerIdx == size - 2 && isSoftmax) {
-                // Find max for numerical stability
-                double maxActivation = nextLayerActivations[0];
-                for (int i = 1; i < layers[layerIdx + 1].getLength(); i++) {
-                    if (nextLayerActivations[i] > maxActivation) {
-                        maxActivation = nextLayerActivations[i];
-                    }
-                }
-
-                // Calculate exp(x - max) and sum
-                double expSum = 0.0f;
-                for (int i = 0; i < layers[layerIdx + 1].getLength(); i++) {
-                    nextLayerActivations[i] = (double) Math.exp(nextLayerActivations[i] - maxActivation);
-                    expSum += nextLayerActivations[i];
-                }
-
-                // Normalize
-                for (int i = 0; i < layers[layerIdx + 1].getLength(); i++) {
-                    nextLayerActivations[i] /= expSum;
-                }
-            } else {
-                // Regular activation for other layers
-                for (int outputNeuron = 0; outputNeuron < layers[layerIdx + 1].getLength(); outputNeuron++) {
-                    nextLayerActivations[outputNeuron]
-                            = activation.apply(nextLayerActivations[outputNeuron]);
-                }
+            // Activation function
+            ActivationFunction_I activation = layers[layerIdx + 1].activationFunction();
+            
+            for (int outputNeuron = 0; outputNeuron < layers[layerIdx + 1].length(); outputNeuron++) {
+                nextLayerActivations[outputNeuron]
+                = activation.apply(nextLayerActivations[outputNeuron]);
             }
 
             // Swap buffers
@@ -229,31 +201,5 @@ class Network {
         }
 
         return currentLayerActivations;
-    }
-
-    /**
-     * Helper method for softmax activation function This is used to check if a
-     * layer is using softmax activation
-     *
-     * @param input Input value
-     * @return Output value (not actually used by softmax implementation)
-     */
-    private double softmaxSingle(double input) {
-        // This is a placeholder - the actual softmax is computed for the entire layer
-        return ActivationFunctions.softmaxSingle(input);
-    }
-
-    /**
-     * Checks if the given activation function is the softmax function
-     *
-     * @param func Activation function to check
-     * @return true if the function is softmax, false otherwise
-     */
-    private boolean isSoftmaxActivation(ActivationFunction_I func) {
-        // In Java we can't directly compare function references, so we'll use a specific method
-        // For this example, we'll check if the function has the same behavior as our softmax function
-        // by using a simple test value
-        double testValue = 1.0f;
-        return Math.abs(func.apply(testValue) - ActivationFunctions.softmaxSingle(testValue)) < 0.0001f;
     }
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #BlueJ class context
 comment0.target=Network
 comment0.text=\n\ Represents\ the\ entire\ neural\ network\ structure\n
@@ -23,3 +24,24 @@ comment7.params=func
 comment7.target=boolean\ isSoftmaxActivation(ActivationFunction_I)
 comment7.text=\n\ Checks\ if\ the\ given\ activation\ function\ is\ the\ softmax\ function\n\n\ @param\ func\ Activation\ function\ to\ check\n\ @return\ true\ if\ the\ function\ is\ softmax,\ false\ otherwise\n
 numComments=8
+=======
+#BlueJ class context
+comment0.target=Network
+comment0.text=\r\n\ Represents\ the\ entire\ neural\ network\ structure\r\n
+comment1.params=layers
+comment1.target=Network(Layer[])
+comment1.text=\r\n\ Creates\ and\ initializes\ a\ new\ neural\ network\r\n\r\n\ @param\ layers\ Array\ of\ layer\ configurations\r\n
+comment2.params=
+comment2.target=void\ randomizeWeights()
+comment2.text=\r\n\ Initializes\ network\ weights\ with\ random\ values\ using\ Xavier/Glorot\r\n\ initialization\r\n\r\n\ Implements\ Xavier/Glorot\ initialization\ which\ helps\ with\:\ 1.\ Preventing\r\n\ vanishing/exploding\ gradients\ 2.\ Maintaining\ appropriate\ scale\ of\r\n\ gradients\ through\ the\ network\ Scale\ factor\ is\ calculated\ as\ sqrt(2\ /\r\n\ (fan_in\ +\ fan_out))\r\n
+comment3.params=
+comment3.target=boolean\ saveWeights()
+comment3.text=\r\n\ Saves\ network\ weights\ to\ a\ file\r\n\r\n\ @return\ true\ if\ save\ was\ successful,\ false\ otherwise\r\n
+comment4.params=
+comment4.target=boolean\ loadWeights()
+comment4.text=\r\n\ Loads\ network\ weights\ from\ a\ file\r\n\r\n\ @return\ true\ if\ load\ was\ successful,\ false\ otherwise\r\n
+comment5.params=input
+comment5.target=double[]\ getResult(double[])
+comment5.text=\r\n\ Performs\ forward\ propagation\ through\ the\ network\r\n\r\n\ This\ function\:\ 1.\ Propagates\ input\ through\ each\ layer\ 2.\ Applies\ weights\r\n\ and\ biases\ 3.\ Handles\ special\ case\ for\ softmax\ in\ output\ layer\ 4.\ Applies\r\n\ activation\ functions\ 5.\ Returns\ final\ layer\ output\r\n\r\n\ @param\ input\ Array\ of\ input\ values\r\n\ @return\ Array\ containing\ output\ layer\ activations\r\n
+numComments=6
+>>>>>>> 3c1bdd6388a879ebb99f555af335bf65a776b094
