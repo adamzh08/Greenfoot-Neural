@@ -4,7 +4,7 @@ import java.io.*;
 /**
  * Represents the entire neural network structure
  */
-class Network {
+class Network implements Serializable {
     /**
      * Array of layer configurations
      */
@@ -18,7 +18,7 @@ class Network {
     /**
      * Filename for storing/loading weights
      */
-    private static final String WEIGHTS_FILENAME = "weights.bin";
+    // private static final String WEIGHTS_FILENAME = "weights.bin";
 
     /**
      * 3D array of network weights: - First dimension: layer index - Second
@@ -27,30 +27,48 @@ class Network {
      */
     private double[][][] weights;
 
+    
     /**
-     * Creates and initializes a new neural network
+     * Makes a deep copy of another Neural network "other"
+     */
+    public Network(Network other) {
+        this.layers = layers;
+        this.size = layers.length;
+        
+        this.weights = other.getWeightClone();
+    }
+    
+    /**
+     * Creates and initializes a new neural network randomly
      *
      * @param layers Array of layer configurations
      */
     public Network(Layer[] layers) {
         this.layers = layers;
         this.size = layers.length;
-
-        // Allocate memory for layers
+        
         this.weights = new double[size - 1][][];
-
         for (int layer = 0; layer < size - 1; layer++) {
             // Add +1 for bias weights
             this.weights[layer] = new double
             [layers[layer].length() + 1]
             [layers[layer + 1].length()];
         }
-
-        // Check if weights file exists, if it does - load weights
-        // If not - randomize and save
-        if (!loadWeights()) {
-            randomizeWeights();
-            saveWeights();
+        
+        randomizeWeights();
+    }
+    
+    public static Network loadFromFile(String srcFileName) {
+        File srcFile = new File(srcFileName);
+        
+        if (!srcFile.exists()) {
+            throw new RuntimeException();
+        }
+        // loading of state
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(srcFile))) {
+            return (Network) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -84,25 +102,11 @@ class Network {
      *
      * @return true if save was successful, false otherwise
      */
-    public boolean saveWeights() {
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(WEIGHTS_FILENAME))) {
-            // Write network size
-            dos.writeInt(size);
-
-            // For each layer, write dimensions
-            for (int layer = 0; layer < size - 1; layer++) {
-                dos.writeInt(layers[layer].length() + 1); // +1 for bias
-                dos.writeInt(layers[layer + 1].length());
-
-                // Write weights for this layer
-                for (int i = 0; i < layers[layer].length() + 1; i++) {
-                    for (int j = 0; j < layers[layer + 1].length(); j++) {
-                        dos.writeDouble(weights[layer][i][j]);
-                    }
-                }
-            }
-
-            System.out.println("Weights saved to " + WEIGHTS_FILENAME);
+    public boolean writeToFile(String tarFileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tarFileName))) {
+            oos.writeObject(this);
+            
+            System.out.println("Weights saved to " + tarFileName);
             return true;
         } catch (IOException e) {
             System.err.println("Error saving weights: " + e.getMessage());
@@ -115,6 +119,7 @@ class Network {
      *
      * @return true if load was successful, false otherwise
      */
+    /*
     public boolean loadWeights() {
         File file = new File(WEIGHTS_FILENAME);
         if (!file.exists()) {
@@ -157,6 +162,7 @@ class Network {
             return false;
         }
     }
+    */
 
     /**
      * Performs forward propagation through the network
@@ -201,5 +207,19 @@ class Network {
         }
 
         return currentLayerActivations;
+    }
+    
+    public double[][][] getWeightClone() {
+        double[][][] weightClone = new double[size][][];
+        
+        for (int layerIdx = 0; layerIdx < size; layerIdx++) {
+            weightClone[layerIdx] = new double[layers[layerIdx].length()][];
+            
+            for (int inputIdx = 0; inputIdx < layers[layerIdx].length(); layerIdx++) {
+                weightClone[layerIdx][inputIdx] = weights[layerIdx][inputIdx].clone();
+            }
+        }
+        
+        return weightClone;
     }
 }
