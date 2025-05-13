@@ -13,12 +13,11 @@ public class Ant extends Actor {
      * Act - do whatever the ant wants to do. This method is called whenever the
      * 'Act' or 'Run' button gets pressed in the environment.
      */
-
     private static Layer[] layers = {
-            new Layer(2, ActivationFunctions::linear),
-            new Layer(8, ActivationFunctions::tanh),
-            new Layer(2, ActivationFunctions::tanh)
-        };
+        new Layer(2, ActivationFunctions::linear),
+        new Layer(8, ActivationFunctions::tanh),
+        new Layer(2, ActivationFunctions::tanh)
+    };
 
     private static Network network = new Network(layers);
 
@@ -43,7 +42,38 @@ public class Ant extends Actor {
         position[1] = 0.0f;
     }
 
-    public static int amount_of_ants = MyWorld.amount_of_ants;
+
+    /**
+     * Get the rays from the ant
+     *
+     * @param x      X position of the ant
+     * @param y      Y position of the ant
+     * @param RADIUS Radius of the rays
+     * @param RAYS   Number of rays
+     * @return Array of rays
+     
+     */
+    public double[] getRays(double x, double y, int RADIUS, int RAYS) {
+        double[] array = new double[RAYS];
+
+        for (int ray = 0; ray < RAYS; ray++) {
+            double angle = (double) ray / (double) RAYS * Math.PI * 2.0f;
+            double x1 = (double) Math.cos(angle);
+            double y1 = (double) Math.sin(angle);
+
+            Color color = Color.WHITE;
+
+            for (int radius = 0; radius < RADIUS; radius++) {
+                if (x + x1 * radius > 0 && x + x1 * radius < getWorld().getWidth() && y + y1 * radius > 0 && y + y1 * radius < getWorld().getHeight()) {
+                    if (!getWorld().getColorAt((int) (x + x1 * radius), (int) (y + y1 * radius)).equals(color)) {
+                        array[ray] = RADIUS - radius;
+                        break;
+                    }
+                }
+            }
+        }
+        return array;
+    }
 
     public void act() {
         if (position[0] == 0.0f && position[1] == 0.0f) {
@@ -53,18 +83,15 @@ public class Ant extends Actor {
         }
 
         long start = System.nanoTime();
-        double[] vector_temp = get_moving_vetor(amount_of_ants*amount_of_ants); // Well Hi
+
+        // FUNCTIONS
         MyWorld.time += System.nanoTime() - start;
 
-        position[0] += vector_temp[0];
-        position[1] += vector_temp[1];
+        double[] rays = getRays(position[0], position[1]);
 
-        position[0] = Math.max(position[0], 0);
-        position[0] = Math.min(position[0], getWorld().getWidth());
-
-        position[1] = Math.max(position[1], 0);
-        position[1] = Math.min(position[1], getWorld().getHeight());
-
-        setLocation((int) position[0], (int) position[1]); // Move ant
+        for (int i = 0; i < rays.length; i++) {
+            System.out.println((double) rays[i]);
+        }
+        //setLocation((int) position[0], (int) position[1]); // Move ant
     }
 }
