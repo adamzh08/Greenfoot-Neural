@@ -96,6 +96,21 @@ class Network implements Serializable {
             }
         }
     }
+    
+    public void mutate(double probabilityOfMutation, double maxMutationStrength) {
+        for (double[][] weightArray2D : weights) {
+            for (double[] weightArray : weightArray2D) {
+                for (int i = 0; i < weightArray.length; i++) {
+                    /**
+                     * change each individual weight with a chance of "probabilityOfMutation"
+                     */
+                    if (Math.random() < probabilityOfMutation) {
+                        weightArray[i] += (2 * Math.random() - 1) * maxMutationStrength;
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Saves network weights to a file
