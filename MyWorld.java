@@ -13,6 +13,8 @@ public class MyWorld extends World {
 
     public static long time = 0;
     
+    private static int initialPopulationSize = 50;
+    
     private List<Ant> antPopulation;
 
     /**
@@ -23,9 +25,13 @@ public class MyWorld extends World {
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(screenWidth, screenHeight, 1);
         
+        setBackground("Labyrint.png");
+        
         antPopulation = new ArrayList<>();
 
-        antPopulation.add(new Ant());
+        for (int i = 0; i < initialPopulationSize; i++) {
+            antPopulation.add(new Ant());
+        }
         antPopulation.forEach(ant -> addObject(ant, screenWidth/2, screenHeight/2));
     }
     

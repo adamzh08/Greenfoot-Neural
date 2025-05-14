@@ -2,57 +2,34 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class ant here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * One single agent
  */
 public class Ant extends Actor {
 
     private static final int RAY_COUNT = 8;
-    private static final double MAX_RAY_TRAVEL_DISTANCE = -1; // @Adam choose
-    
+    private static final double MAX_RAY_TRAVEL_DISTANCE = 100; // @Adam choose
+
     private static final Network DEFAULT_NETWORK = 
         new Network(
             new Layer[]{
-                new Layer(2, ActivationFunctions::linear), // rays as input
+                new Layer(RAY_COUNT, ActivationFunctions::linear), // rays as input
                 new Layer(8, ActivationFunctions::tanh),
                 new Layer(1, ActivationFunctions::tanh) // angle as output
             }
         );
 
-    private static final double ANT_SPEED = 1;
+    /**
+     * The ant's (constant) speed in pixel/frame
+     */
+    private static final int ANT_SPEED = 1;
 
-    
     /**
      * The ant's brain
      */
     private Network network;
 
-    public double[] position = {0.0f, 0.0f}; // X, Y
-    public double currentAngle = 0; // in radiants
-
     public Ant() {
-        network = new Network(DEFAULT_NETWORK);
-    }
-
-    private double[] get_moving_vetor(int amount) {
-        double[] vector = new double[2];
-
-        for (int i = 0; i < amount; i++) {
-            double[] position = {((Ant) getWorld().getObjects(Ant.class).get(i)).getX() - getX(), ((Ant) getWorld().getObjects(Ant.class).get(i)).getY() - getY()};
-            double[] vector_temp = network.getResult(position);
-
-            vector[0] += vector_temp[0];
-            vector[1] += vector_temp[1];
-        }
-
-        return vector;
-    }
-
-    public void resetPosition() {
-        position[0] = 0.0f;
-        position[1] = 0.0f;
+        network = new Network(DEFAULT_NETWORK.getLayers());
     }
 
     /**
@@ -87,18 +64,11 @@ public class Ant extends Actor {
     }
 
     public void act() {
-        if (position[0] == 0.0f && position[1] == 0.0f) {
-            // Initialize the vector with the current position
-            position[0] = (double) getX();
-            position[1] = (double) getY();
-        }
-
         long start = System.nanoTime();
-
         // FUNCTIONS
         MyWorld.time += System.nanoTime() - start;
 
-        double[] rays = getRays(position[0], position[1]);
+        double[] rays = getRays(getX(), getY());
 
         for (int i = 0; i < rays.length; i++) {
             System.out.println((double) rays[i]);
@@ -106,14 +76,19 @@ public class Ant extends Actor {
 
         // TODO @Adam: link rays with NN
         // My Idea: forach ray 1 input neuron. If ray doesnot hit: input 0; else input 1 / rayTravelDistanceBeforeHit
-        double[] inputsToNN = null;
-        
+        double[] inputsToNN = rays;
+
+        // inputsToNN = new double[RAY_COUNT]; // test with {0, 0, 0, ...}
+
         double deltaAngle = network.getResult(inputsToNN)[0] * Math.PI; // first output because there is only 1
+
+        setRotation(getRotation() + (int) deltaAngle);
         
-        currentAngle += deltaAngle;
+        System.out.println(deltaAngle);
+
         
-        // move ant
-        position[0] += Math.cos(currentAngle) * ANT_SPEED;
-        position[1] += Math.sin(currentAngle) * ANT_SPEED;
+        // move ant, greenfoot takes care of x += Math.sin()
+        setRotation(getRotation() + (int) deltaAngle);
+        move(ANT_SPEED);
     }
 }

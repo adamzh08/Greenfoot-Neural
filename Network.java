@@ -48,7 +48,7 @@ class Network implements Serializable {
             [layers[layer + 1].length()];
         }
         
-        randomizeWeights();
+        randomizeWeights_bad();
     }
     /**
      * Load a NN from a file
@@ -92,13 +92,22 @@ class Network implements Serializable {
         }
     }
     
+    private void randomizeWeights_bad() {
+        Random random = new Random();
+        for (double[][] weightLayer2D : weights) {
+            for (double[] weightArray : weightLayer2D) {
+                for (int i = 0; i < weightArray.length; i++) {
+                    weightArray[i] = 2 * random.nextDouble() - 1;
+                }
+            }
+        }
+    }
+    
     public void mutate(double probabilityOfMutation, double maxMutationStrength) {
         for (double[][] weightArray2D : weights) {
             for (double[] weightArray : weightArray2D) {
                 for (int i = 0; i < weightArray.length; i++) {
-                    /**
-                     * change each individual weight with a chance of "probabilityOfMutation"
-                     */
+                    // change each individual weight with a chance of "probabilityOfMutation"
                     if (Math.random() < probabilityOfMutation) {
                         weightArray[i] += (2 * Math.random() - 1) * maxMutationStrength;
                     }
@@ -136,6 +145,7 @@ class Network implements Serializable {
      */
     public double[] getResult(double[] input) {
         // removed clone, since currentLayerActivations is not mutated
+        Objects.requireNonNull(input);
         double[] currentLayerActivations = input;
 
         for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
@@ -183,5 +193,9 @@ class Network implements Serializable {
         }
         
         return weightClone;
+    }
+    
+    public Layer[] getLayers() {
+        return layers;
     }
 }
