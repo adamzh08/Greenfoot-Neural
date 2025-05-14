@@ -16,25 +16,18 @@ class Network implements Serializable {
     private int size;
 
     /**
-     * Filename for storing/loading weights
-     */
-    // private static final String WEIGHTS_FILENAME = "weights.bin";
-
-    /**
      * 3D array of network weights: - First dimension: layer index - Second
      * dimension: input neuron index (including bias) - Third dimension: output
      * neuron index
      */
     private double[][][] weights;
 
-    
     /**
      * Makes a deep copy of another Neural network "other"
      */
     public Network(Network other) {
-        this.layers = layers;
-        this.size = layers.length;
-        
+        this.layers = other.layers;
+        this.size = other.size;
         this.weights = other.getWeightClone();
     }
     
@@ -130,56 +123,6 @@ class Network implements Serializable {
     }
 
     /**
-     * Loads network weights from a file
-     *
-     * @return true if load was successful, false otherwise
-     */
-    /*
-    public boolean loadWeights() {
-        File file = new File(WEIGHTS_FILENAME);
-        if (!file.exists()) {
-            System.out.println("Weights file not found. Will randomize weights.");
-            return false;
-        }
-
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(WEIGHTS_FILENAME))) {
-            // Read network size and verify
-            int savedSize = dis.readInt();
-            if (savedSize != size) {
-                System.err.println("Saved network size doesn't match current network.");
-                return false;
-            }
-
-            // Read each layer
-            for (int layer = 0; layer < size - 1; layer++) {
-                int inputSize = dis.readInt();
-                int outputSize = dis.readInt();
-
-                // Verify dimensions
-                if (inputSize != layers[layer].length() + 1
-                || outputSize != layers[layer + 1].length()) {
-                    System.err.println("Saved layer dimensions don't match current network.");
-                    return false;
-                }
-
-                // Read weights
-                for (int i = 0; i < layers[layer].length() + 1; i++) {
-                    for (int j = 0; j < layers[layer + 1].length(); j++) {
-                        weights[layer][i][j] = dis.readDouble();
-                    }
-                }
-            }
-
-            System.out.println("Weights loaded from " + WEIGHTS_FILENAME);
-            return true;
-        } catch (IOException e) {
-            System.err.println("Error loading weights: " + e.getMessage());
-            return false;
-        }
-    }
-    */
-
-    /**
      * Performs forward propagation through the network
      *
      * This function: 1. Propagates input through each layer 2. Applies weights
@@ -227,10 +170,12 @@ class Network implements Serializable {
     public double[][][] getWeightClone() {
         double[][][] weightClone = new double[size][][];
         
-        for (int layerIdx = 0; layerIdx < size; layerIdx++) {
-            weightClone[layerIdx] = new double[layers[layerIdx].length()][];
+        for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
+            int inputCount = layers[layerIdx].length() + 1;
+            int outputCount = layers[layerIdx + 1].length();
+            weightClone[layerIdx] = new double[inputCount][]; // alternative: new double[inputCount][outputCount]
             
-            for (int inputIdx = 0; inputIdx < layers[layerIdx].length(); layerIdx++) {
+            for (int inputIdx = 0; inputIdx < inputCount; inputIdx++) {
                 weightClone[layerIdx][inputIdx] = weights[layerIdx][inputIdx].clone();
             }
         }
