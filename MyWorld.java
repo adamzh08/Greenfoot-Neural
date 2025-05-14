@@ -13,19 +13,13 @@ public class MyWorld extends World {
 
     public static long time = 0;
     
-    private static int initialPopulationSize = 50;
+    private static int initialPopulationSize = 1;
     
     private List<Ant> antPopulation;
 
-    /**
-     * Constructor for objects of class MyWorld.
-     *
-     */
     public MyWorld() {
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(screenWidth, screenHeight, 1);
-        
-        setBackground("Labyrint.png");
         
         antPopulation = new ArrayList<>();
 
@@ -38,7 +32,6 @@ public class MyWorld extends World {
     @Override
     public void act() {
         antPopulation.forEach(Ant::act);
-        
-        
+        setBackground("Labyrint.png");
     }
 }

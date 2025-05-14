@@ -4,7 +4,7 @@ import java.io.*;
 /**
  * Represents the entire neural network structure
  */
-class Network implements Serializable {
+public class Network implements Serializable {
     /**
      * Array of layer configurations
      */
@@ -48,7 +48,7 @@ class Network implements Serializable {
             [layers[layer + 1].length()];
         }
         
-        randomizeWeights_bad();
+        randomizeWeights();
     }
     /**
      * Load a NN from a file
@@ -87,17 +87,6 @@ class Network implements Serializable {
                 for (int j = 0; j < layers[layer + 1].length(); j++) {
                     double r = (random.nextDouble() * 2.0f - 1.0f);
                     weights[layer][i][j] = r * scale;
-                }
-            }
-        }
-    }
-    
-    private void randomizeWeights_bad() {
-        Random random = new Random();
-        for (double[][] weightLayer2D : weights) {
-            for (double[] weightArray : weightLayer2D) {
-                for (int i = 0; i < weightArray.length; i++) {
-                    weightArray[i] = 2 * random.nextDouble() - 1;
                 }
             }
         }

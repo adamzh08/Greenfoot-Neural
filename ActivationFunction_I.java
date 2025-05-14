@@ -2,7 +2,7 @@
  * Functional interface for activation functions
  */
 @FunctionalInterface
-interface ActivationFunction_I {
+public interface ActivationFunction_I {
 
     double apply(double input);
 }
