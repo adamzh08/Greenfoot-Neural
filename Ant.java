@@ -60,8 +60,6 @@ public class Ant extends Actor {
      *
      * @param x      X position of the ant
      * @param y      Y position of the ant
-     * @param RADIUS Radius of the rays
-     * @param RAYS   Number of rays
      * @return Array of rays
 
      */

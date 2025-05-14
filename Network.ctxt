@@ -9,6 +9,7 @@ comment2.target=Network(Layer[])
 comment2.text=\r\n\ Creates\ and\ initializes\ a\ new\ neural\ network\ randomly\r\n\r\n\ @param\ layers\ Array\ of\ layer\ configurations\r\n
 comment3.params=srcFileName
 comment3.target=Network\ loadFromFile(java.lang.String)
+comment3.text=\r\n\ Load\ a\ NN\ from\ a\ file\r\n
 comment4.params=
 comment4.target=void\ randomizeWeights()
 comment4.text=\r\n\ Initializes\ network\ weights\ with\ random\ values\ using\ Xavier/Glorot\r\n\ initialization\r\n\r\n\ Implements\ Xavier/Glorot\ initialization\ which\ helps\ with\:\ 1.\ Preventing\r\n\ vanishing/exploding\ gradients\ 2.\ Maintaining\ appropriate\ scale\ of\r\n\ gradients\ through\ the\ network\ Scale\ factor\ is\ calculated\ as\ sqrt(2\ /\r\n\ (fan_in\ +\ fan_out))\r\n

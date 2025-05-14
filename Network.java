@@ -26,7 +26,7 @@ class Network implements Serializable {
      * Makes a deep copy of another Neural network "other"
      */
     public Network(Network other) {
-        this.layers = other.layers;
+        this.layers = other.layers; // layers dont need to be deep copied
         this.size = other.size;
         this.weights = other.getWeightClone();
     }
@@ -50,7 +50,9 @@ class Network implements Serializable {
         
         randomizeWeights();
     }
-    
+    /**
+     * Load a NN from a file
+     */
     public static Network loadFromFile(String srcFileName) {
         File srcFile = new File(srcFileName);
         
