@@ -171,7 +171,7 @@ public class Network implements Serializable {
     }
     
     public double[][][] getWeightClone() {
-        double[][][] weightClone = new double[size][][];
+        double[][][] weightClone = new double[size - 1][][];
         
         for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
             int inputCount = layers[layerIdx].length() + 1;
@@ -184,6 +184,12 @@ public class Network implements Serializable {
         }
         
         return weightClone;
+    }
+
+
+    @Override
+    public String toString() {
+        return Arrays.toString(layers);
     }
     
     public Layer[] getLayers() {

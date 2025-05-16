@@ -12,7 +12,7 @@ public class GameManager {
 
     private static final Image antImage = new Image("ant.png");
 
-    private static final int initialPopulationSize = 1;
+    private static final int initialPopulationSize = 3000;
     private static final int wallAmount = 10;
 
     private List<Ant> antPopulation;
@@ -74,5 +74,8 @@ public class GameManager {
 
     public List<LineSegmentWall> getWalls() {
         return walls;
+    }
+    public List<Ant> getAntPopulation() {
+        return antPopulation;
     }
 }

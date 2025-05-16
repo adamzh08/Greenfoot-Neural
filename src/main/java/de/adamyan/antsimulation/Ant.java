@@ -1,6 +1,7 @@
 package de.adamyan.antsimulation;
 
 import de.adamyan.antsimulation.NN.*;
+import de.adamyan.antsimulation.Physics.LineSegmentWall;
 import de.adamyan.antsimulation.Physics.Ray;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -13,35 +14,31 @@ public class Ant {
     // Ant settings
 
     public static final int RAY_COUNT = 16;
-    public static final double MAX_RAY_TRAVEL_DISTANCE = 100;
+    public static final double MAX_RAY_TRAVEL_DISTANCE = 50;
     public static final int ANT_SPEED = 1;
     public static final double MAX_DELTA_ANGLE_PER_FRAME = Math.toRadians(10);
-    public static final double FIELD_OF_VIEW_PERCENTAGE = 90 /360.;
+    public static final double FIELD_OF_VIEW_PERCENTAGE = 150 / 360.;
 
 
     public static final Network DEFAULT_NETWORK =
             new Network(
                     new Layer[]{
                             new Layer(RAY_COUNT, ActivationFunctions::linear), // rays as input
+                            new Layer(8, ActivationFunctions::relu),
+                            new Layer(8, ActivationFunctions::relu),
                             new Layer(1, ActivationFunctions::tanh) // angle as single output
                     }
             );
 
 
 
-
-
-    /**
-     * Debug/Test tool to see the rays
-     */
+    /// Debug/Test tool to see the rays
     private static final boolean shouldDrawRays = true;
 
 
     private final GameManager gameManager;
 
-    /**
-     * The ant's brain
-     */
+    /// The ant's brain
     private Network network;
 
     private double[] position;
@@ -64,7 +61,7 @@ public class Ant {
     public double[] getRayDistances(GraphicsContext gc) {
         double[] distances = new double[RAY_COUNT];
 
-        gc.setLineWidth(1);
+        gc.setLineWidth(0.1);
 
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
             double[] hitCoordinates = Ray.cast(this, rayIdx).getIntersection(gameManager);
@@ -84,22 +81,16 @@ public class Ant {
         return distances;
     }
 
-    /**
-     * Converts a distance in pixels to a NN input in range [0; 1]
-     */
+    /// Converts a distance in pixels to a NN input in range [0; 1]
+
     private double rayDistanceToNNInput(double rayDistance) {
         // to be perfected
         return (MAX_RAY_TRAVEL_DISTANCE - rayDistance) / MAX_RAY_TRAVEL_DISTANCE;
-
     }
 
     public void move(GraphicsContext gc) {
 
         double[] rayDistancesTraveled = getRayDistances(gc);
-
-        for (int i = 0; i < RAY_COUNT; i++) {
-            System.out.println("Ray #" + i + " distance traveled: " + rayDistancesTraveled[i]);
-        }
 
         double[] inputsToNN = new double[RAY_COUNT];
         for (int i = 0; i < RAY_COUNT; i++) {
@@ -108,12 +99,37 @@ public class Ant {
 
         double deltaAngle = network.getResult(inputsToNN)[0] * MAX_DELTA_ANGLE_PER_FRAME; // first output because there is only 1
 
-        System.out.println("deltaAngle: " + Math.toDegrees(deltaAngle));
-
-        // move ant
         rotationAngle += deltaAngle;
-        position[0] += Math.cos(rotationAngle) * ANT_SPEED;
-        position[1] += Math.sin(rotationAngle) * ANT_SPEED;
+        move();
+    }
+
+    private void move() {
+        double[] nextFramePosition = {
+                position[0] + Math.cos(rotationAngle) * ANT_SPEED,
+                position[1] + Math.sin(rotationAngle) * ANT_SPEED
+        };
+
+        LineSegmentWall path = new LineSegmentWall(position[0], position[1], nextFramePosition[0], nextFramePosition[1]);
+
+        boolean crossedAny = false;
+        for (LineSegmentWall wall : gameManager.getWalls()) {
+            double[] pathWallIntersection = Ray.intersectionCoordinates(path, wall);
+
+            if (pathWallIntersection != null) {
+                rotationAngle += Math.PI; // 180° rotation (bounce)
+                crossedAny = true;
+                break;
+            }
+        }
+
+        if (!crossedAny) {
+            position = nextFramePosition;
+        }
+
+        position[0] = Math.max(position[0], 0);
+        position[0] = Math.min(position[0], 1000);
+        position[1] = Math.max(position[1], 0);
+        position[1] = Math.min(position[1], 800);
     }
 
     public double getX() {
