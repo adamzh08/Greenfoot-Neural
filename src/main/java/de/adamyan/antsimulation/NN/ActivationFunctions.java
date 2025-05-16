@@ -1,3 +1,5 @@
+package de.adamyan.antsimulation.NN;
+
 /**
  * Collection of activation functions for neural networks
  */
@@ -20,7 +22,7 @@ public final class ActivationFunctions {
      * @return Output in range (0,1)
      */
     public static double sigmoid(double x) {
-        return 1.0f / (1.0f + (double) Math.exp(-x));
+        return 1.0f / (1.0f + Math.exp(-x));
     }
 
     /**
@@ -33,7 +35,7 @@ public final class ActivationFunctions {
      * @return Output in range (-1,1)
      */
     public static double tanh(double x) {
-        return (double) Math.tanh(x);
+        return Math.tanh(x);
     }
 
     /**
@@ -99,7 +101,7 @@ public final class ActivationFunctions {
      * @return x if x ≥ 0, alpha * (exp(x) - 1) otherwise
      */
     public static double elu(double x, double alpha) {
-        return x >= 0.0f ? x : alpha * ((double) Math.exp(x) - 1.0f);
+        return x >= 0.0f ? x : alpha * (Math.exp(x) - 1.0f);
     }
 
     /**
@@ -122,7 +124,7 @@ public final class ActivationFunctions {
      * @return Exponential of input (partial softmax)
      */
     public static double softmaxSingle(double x) {
-        return (double) Math.exp(x);
+        return Math.exp(x);
     }
 
     /**
@@ -146,7 +148,7 @@ public final class ActivationFunctions {
 
         double sum = 0.0f;
         for (int i = 0; i < size; i++) {
-            output[i] = (double) Math.exp(input[i] - maxVal);
+            output[i] = Math.exp(input[i] - maxVal);
             sum += output[i];
         }
 
@@ -167,6 +169,6 @@ public final class ActivationFunctions {
      */
     public static double gelu(double x) {
         double sqrt2OverPi = Math.sqrt(2 / Math.PI);
-        return (double) (0.5 * x * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * Math.pow(x, 3)))));
+        return (0.5 * x * (1 + Math.tanh(sqrt2OverPi * (x + 0.044715 * Math.pow(x, 3)))));
     }
 }

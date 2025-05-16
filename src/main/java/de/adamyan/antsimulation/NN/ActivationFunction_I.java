@@ -1,3 +1,5 @@
+package de.adamyan.antsimulation.NN;
+
 /**
  * Functional interface for activation functions
  */

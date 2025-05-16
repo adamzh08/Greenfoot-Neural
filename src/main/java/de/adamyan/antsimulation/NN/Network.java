@@ -1,3 +1,5 @@
+package de.adamyan.antsimulation.NN;
+
 import java.util.*;
 import java.io.*;
 
