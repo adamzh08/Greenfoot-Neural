@@ -1,5 +1,8 @@
 package de.adamyan.antsimulation.NN;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
+
 import java.util.*;
 import java.io.*;
 
@@ -31,6 +34,25 @@ public class Network implements Serializable {
         this.layers = other.layers; // layers dont need to be deep copied
         this.size = other.size;
         this.weights = other.getWeightClone();
+    }
+
+    public Network(Network mama, Network papa, double papaProbability) {
+        this.layers = mama.layers; // layers dont need to be deep copied
+        this.size = mama.size;
+
+        this.weights = mama.getWeightClone();
+
+        double[][][] papaWeights = papa.weights;
+
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
+                for (int k = 0; k < weights[i][j].length; k++) {
+                    if (Math.random() < papaProbability) {
+                        this.weights[i][j][k] = papaWeights[i][j][k];
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -184,6 +206,52 @@ public class Network implements Serializable {
         }
         
         return weightClone;
+    }
+
+    public void draw(Canvas canvas, double neuronRadius, double maxLineWidth) {
+        var gc = canvas.getGraphicsContext2D();
+
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        gc.setLineWidth(5);
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        double layerSpaceX = canvas.getWidth() / layers.length;
+
+        for (int layerIdx = 0; layerIdx < size; layerIdx++) {
+            double posX = layerSpaceX * layerIdx + layerSpaceX / 2;
+
+            double neuronSpaceY = canvas.getHeight() / layers[layerIdx].length();
+
+            for (int neuronIdx = 0; neuronIdx < layers[layerIdx].length(); neuronIdx++) {
+                double posY = neuronSpaceY * neuronIdx + neuronSpaceY / 2;
+                gc.setFill(Color.BLACK);
+                gc.fillOval(posX - neuronRadius, posY - neuronRadius, neuronRadius * 2, neuronRadius * 2);
+            }
+        }
+
+        for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
+            double startX = layerSpaceX * layerIdx + layerSpaceX / 2;
+            double endX = layerSpaceX * (layerIdx + 1) + layerSpaceX / 2;
+
+            double inputNeuronSpaceY = canvas.getHeight() / layers[layerIdx].length();
+
+            for (int inputNeuronIdx = 0; inputNeuronIdx < layers[layerIdx].length(); inputNeuronIdx++) {
+                double startY = inputNeuronSpaceY * inputNeuronIdx + inputNeuronSpaceY / 2;
+
+                double outputNeuronSpaceY = canvas.getHeight() / layers[layerIdx + 1].length();
+                for (int outputNeuronIdx = 0; outputNeuronIdx < layers[layerIdx + 1].length(); outputNeuronIdx++) {
+                    double endY = outputNeuronSpaceY * outputNeuronIdx + outputNeuronSpaceY / 2;
+
+                    double weightValue = weights[layerIdx][inputNeuronIdx][outputNeuronIdx];
+
+                    gc.setLineWidth(Math.abs(weightValue) * maxLineWidth);
+                    gc.setStroke(weightValue > 0 ? Color.BLUE : Color.RED);
+                    gc.strokeLine(startX, startY, endX, endY);
+                }
+            }
+        }
     }
 
 

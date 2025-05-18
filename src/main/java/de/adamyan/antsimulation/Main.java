@@ -22,22 +22,36 @@ public class Main extends Application {
     private Text fpsText;
 
     private Text antAmountText;
+    private Text generationAmountText;
+
+    private Canvas antNetworkVisualisationCanvas;
 
     GameManager gameManager;
 
     private void start_simulation() {
         gameManager = new GameManager(1000, 800);
 
+        gameManager.getAntPopulation().getFirst().getNetwork().draw(antNetworkVisualisationCanvas, 5, 5);
+
         AnimationTimer frameTimer = new AnimationTimer() {
             long lastNow;
             @Override
             public void handle(long now) {
-                gameManager.act(canvas);
-
                 double deltaTime = (now - lastNow) / 1e6;
+
+                boolean genFinished = gameManager.act(canvas, deltaTime);
+
+                // Game window
                 fpsText.setText("FPS: " + Math.round(1000 / deltaTime));
 
+                // Ant stats window
                 antAmountText.setText("Ant count: " + gameManager.getAntPopulation().size());
+
+                // gen stats window
+                if (genFinished) {
+                    generationAmountText.setText("Gen count: " + gameManager.getGenCount());
+                    gameManager.getAntPopulation().getFirst().getNetwork().draw(antNetworkVisualisationCanvas, 5, 5);
+                }
 
                 lastNow = now;
             }
@@ -50,6 +64,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         // -------- UI stuff ----------
 
+        // -------- Main window -------
         canvas = new Canvas(1000, 800);
 
         Button resetButton = new Button("New simulation");
@@ -64,12 +79,20 @@ public class Main extends Application {
         fpsText.setLayoutX(200);
         fpsText.setLayoutY(850);
 
+        Text goalText = new Text("Goal: be at the right wall when the time is over");
+        goalText.setFont(new Font(20));
+        goalText.setLayoutX(400);
+        goalText.setLayoutY(850);
 
-        Group root = new Group(canvas, resetButton, fpsText);
+        Group root = new Group(canvas, resetButton, fpsText, goalText);
 
+        Scene scene = new Scene(root, 1000, 900);
 
+        stage.setTitle("God simulator");
+        stage.setScene(scene);
+        stage.show();
 
-        // ----------------------------
+        // -------- Ant stats ---------
         antAmountText = new Text("Ant count: undefined");
         antAmountText.setFont(new Font(30));
         antAmountText.setLayoutX(30);
@@ -106,19 +129,36 @@ public class Main extends Application {
 
         Stage antStatsStage = new Stage();
         antStatsStage.setX(200);
-        antStatsStage.setY(500);
-        antStatsStage.setTitle("Ant stats");
+        antStatsStage.setY(600);
+        antStatsStage.setTitle("Ant settings");
         antStatsStage.setScene(antStatsScene);
 
         antStatsStage.show();
+
+        // -------- Gen stats ---------
+        generationAmountText = new Text("Gen count: 0");
+        generationAmountText.setFont(new Font(30));
+        generationAmountText.setLayoutX(30);
+        generationAmountText.setLayoutY(430);
+
+
+
+        antNetworkVisualisationCanvas = new Canvas(500, 400);
+
+
+        Group genStatsRoot = new Group(antNetworkVisualisationCanvas, generationAmountText);
+
+        Scene genStatsScene = new Scene(genStatsRoot, 500, 500);
+
+        Stage genStatsStage = new Stage();
+        genStatsStage.setX(200);
+        genStatsStage.setY(100);
+        genStatsStage.setTitle("Gen stats");
+        genStatsStage.setScene(genStatsScene);
+
+        genStatsStage.show();
+
         // ----------------------------
-
-
-        Scene scene = new Scene(root, 1000, 900);
-
-        stage.setTitle("God simulator");
-        stage.setScene(scene);
-        stage.show();
 
         start_simulation();
     }

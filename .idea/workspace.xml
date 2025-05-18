@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3346fcd-228e-453a-89a0-052032e72fb6" name="Changes" comment="" />
+    <list default="true" id="c3346fcd-228e-453a-89a0-052032e72fb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/Network.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/Network.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,21 +19,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Yan1889"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Yan1889&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
-    "url": "https://github.com/adamzh08/Greenfoot-Neural",
+    "url": "git@github.com:adamzh08/Greenfoot-Neural/",
     "accountId": "ea9062ec-8b74-4401-85ce-fba0d4d07d24"
   }
 }]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2x0HC4pPuTZpjUvODmy5zI6A0P7" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -35,12 +41,24 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Normal.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "JavaFX",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/yanam/IdeaProjects/greenfoot/Greenfoot-Neural"
+    "last_opened_file_path": "C:/Users/yanam/IdeaProjects/TurnBasedGame"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="Normal" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="21" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="de.adamyan.antsimulation.Main" />
+      <module name="AntSimulation" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -51,5 +69,16 @@
       <updated>1747067940793</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

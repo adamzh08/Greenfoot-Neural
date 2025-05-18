@@ -23,20 +23,21 @@ public class Ant {
     public static final Network DEFAULT_NETWORK =
             new Network(
                     new Layer[]{
-                            new Layer(RAY_COUNT, ActivationFunctions::linear), // rays as input
-                            new Layer(8, ActivationFunctions::relu),
-                            new Layer(8, ActivationFunctions::relu),
+                            // +1 for internal compass
+                            // +1 for time progress
+                            new Layer(RAY_COUNT +1 +1, ActivationFunctions::linear), // rays as input
+                            new Layer(4, ActivationFunctions::relu),
                             new Layer(1, ActivationFunctions::tanh) // angle as single output
                     }
             );
 
 
-
     /// Debug/Test tool to see the rays
-    private static final boolean shouldDrawRays = true;
+    public static final boolean shouldDrawRays = false;
 
 
     private final GameManager gameManager;
+
 
     /// The ant's brain
     private Network network;
@@ -44,13 +45,14 @@ public class Ant {
     private double[] position;
     private double rotationAngle;
 
+    private int amountOfWallCollisions;
+
     public Ant(GameManager gameManager) {
         this.gameManager = gameManager;
 
         network = new Network(DEFAULT_NETWORK.getLayers());
 
-        position = new double[]{400, 400};
-        rotationAngle = 0;
+        resetPositionAndRotation();
     }
 
     /**
@@ -66,40 +68,45 @@ public class Ant {
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
             double[] hitCoordinates = Ray.cast(this, rayIdx).getIntersection(gameManager);
 
-            if (hitCoordinates != null) {
-                distances[rayIdx] = Math.sqrt(
-                        (getX() - hitCoordinates[0]) * (getX() - hitCoordinates[0])
-                        + (getY() - hitCoordinates[1]) * (getY() - hitCoordinates[1])
-                );
+            distances[rayIdx] = Math.sqrt(
+                    (getX() - hitCoordinates[0]) * (getX() - hitCoordinates[0])
+                            + (getY() - hitCoordinates[1]) * (getY() - hitCoordinates[1])
+            );
 
-                if (shouldDrawRays) {
-                    gc.setStroke(Color.RED);
-                    gc.strokeLine(getX(), getY(), hitCoordinates[0], hitCoordinates[1]);
-                }
+            if (shouldDrawRays) {
+                gc.setStroke(Color.RED);
+                gc.strokeLine(getX(), getY(), hitCoordinates[0], hitCoordinates[1]);
             }
         }
         return distances;
     }
 
-    /// Converts a distance in pixels to a NN input in range [0; 1]
+    /// Converts a distance in pixels to a NN input in range [0;1]
 
     private double rayDistanceToNNInput(double rayDistance) {
         // to be perfected
         return (MAX_RAY_TRAVEL_DISTANCE - rayDistance) / MAX_RAY_TRAVEL_DISTANCE;
     }
 
-    public void move(GraphicsContext gc) {
+    public void move(GraphicsContext gc, double timeProgress) {
 
         double[] rayDistancesTraveled = getRayDistances(gc);
 
-        double[] inputsToNN = new double[RAY_COUNT];
+        double[] inputsToNN = new double[network.getLayers()[0].length()];
+
+        // most inputs for rays
         for (int i = 0; i < RAY_COUNT; i++) {
             inputsToNN[i] = rayDistanceToNNInput(rayDistancesTraveled[i]);
         }
 
+        // last for internal compass
+        inputsToNN[inputsToNN.length - 2] = rotationAngle; // current rotation
+        inputsToNN[inputsToNN.length - 1] = timeProgress;
+
         double deltaAngle = network.getResult(inputsToNN)[0] * MAX_DELTA_ANGLE_PER_FRAME; // first output because there is only 1
 
         rotationAngle += deltaAngle;
+
         move();
     }
 
@@ -116,7 +123,9 @@ public class Ant {
             double[] pathWallIntersection = Ray.intersectionCoordinates(path, wall);
 
             if (pathWallIntersection != null) {
+                amountOfWallCollisions++;
                 rotationAngle += Math.PI; // 180° rotation (bounce)
+
                 crossedAny = true;
                 break;
             }
@@ -132,13 +141,39 @@ public class Ant {
         position[1] = Math.min(position[1], 800);
     }
 
+
+    public double getReward() {
+        double progress = getX() / 1000;
+
+        return progress - 0.3 * amountOfWallCollisions;
+    }
+
+    public void setNetwork(Network newNet) {
+        network = newNet;
+    }
+
+    public Network getNetwork() {
+        return network;
+    }
+
     public double getX() {
         return position[0];
     }
+
     public double getY() {
         return position[1];
     }
+
     public double getAngle() {
         return rotationAngle;
+    }
+
+    public void resetReward() {
+        amountOfWallCollisions = 0;
+    }
+
+    public void resetPositionAndRotation() {
+        position = new double[]{50, 400};
+        rotationAngle = 0;
     }
 }
