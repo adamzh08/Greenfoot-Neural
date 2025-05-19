@@ -3,12 +3,18 @@ package de.adamyan.antsimulation.Physics;
 import de.adamyan.antsimulation.*;
 
 public record RayCast(double startX, double startY, double cosAngle, double sinAngle, double length) {
+
+
+    /**
+     * @return position of the nearest intersection point
+     */
     public double[] getIntersection(GameManager gameManager) {
 
         double smallestDistSquared = Double.MAX_VALUE;
 
-        double[] shortestIntersectionPoint = null;
+        double[] nearestIntersectionPoint = null;
 
+        // iterate over every wall in the game
         for (LineSegmentWall wall : gameManager.getWalls()) {
             double[] intersection = getIntersection_line(wall);
 
@@ -17,18 +23,19 @@ public record RayCast(double startX, double startY, double cosAngle, double sinA
                         + (startY - intersection[1]) * (startY - intersection[1]);
 
 
+                // check if this is the closest wall to the ray origin
                 if (rayTravelLengthSquared < smallestDistSquared) {
                     smallestDistSquared = rayTravelLengthSquared;
-                    shortestIntersectionPoint = intersection;
+                    nearestIntersectionPoint = intersection;
                 }
             }
         }
 
-        if (shortestIntersectionPoint == null) {
+        if (nearestIntersectionPoint == null) {
             // end point of ray
             return new double[]{startX + cosAngle * length, startY + sinAngle * length};
         }
-        return shortestIntersectionPoint;
+        return nearestIntersectionPoint;
     }
 
     @AIGenerated

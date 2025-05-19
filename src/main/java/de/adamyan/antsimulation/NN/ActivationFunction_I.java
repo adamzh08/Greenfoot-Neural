@@ -5,6 +5,5 @@ package de.adamyan.antsimulation.NN;
  */
 @FunctionalInterface
 public interface ActivationFunction_I {
-
     double apply(double input);
 }

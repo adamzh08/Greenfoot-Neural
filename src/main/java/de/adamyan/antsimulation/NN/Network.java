@@ -13,42 +13,45 @@ public class Network implements Serializable {
     /**
      * Array of layer configurations
      */
-    private Layer[] layers;
+    private final Layer[] layers;
 
     /**
      * Total number of layers in the network
      */
-    private int size;
+    private final int size;
 
     /**
      * 3D array of network weights: - First dimension: layer index - Second
      * dimension: input neuron index (including bias) - Third dimension: output
      * neuron index
      */
-    private double[][][] weights;
+    private final double[][][] weights;
 
     /**
      * Makes a deep copy of another Neural network "other"
      */
     public Network(Network other) {
-        this.layers = other.layers; // layers dont need to be deep copied
+        this.layers = other.layers; // layers don't need to be deep copied
         this.size = other.size;
         this.weights = other.getWeightClone();
     }
 
-    public Network(Network mama, Network papa, double papaProbability) {
-        this.layers = mama.layers; // layers dont need to be deep copied
-        this.size = mama.size;
+    /**
+     * Creates a new Network as a random combination of 2 others
+     * @param papaProbability probability that an inherited weight will be from the father network
+     */
+    public Network(Network mom, Network dad, double papaProbability) {
+        this.layers = mom.layers;
+        this.size = mom.size;
 
-        this.weights = mama.getWeightClone();
-
-        double[][][] papaWeights = papa.weights;
+        // set the weights equal to the weights of the mother
+        this.weights = mom.getWeightClone();
 
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 for (int k = 0; k < weights[i][j].length; k++) {
                     if (Math.random() < papaProbability) {
-                        this.weights[i][j][k] = papaWeights[i][j][k];
+                        this.weights[i][j][k] = dad.weights[i][j][k];
                     }
                 }
             }
@@ -105,7 +108,7 @@ public class Network implements Serializable {
 
         for (int layer = 0; layer < size - 1; layer++) {
             // Xavier/Glorot initialization
-            double scale = (double) Math.sqrt(2.0f / (layers[layer].length() + layers[layer + 1].length()));
+            double scale = Math.sqrt(2.0f / (layers[layer].length() + layers[layer + 1].length()));
 
             for (int i = 0; i < layers[layer].length() + 1; i++) {
                 for (int j = 0; j < layers[layer + 1].length(); j++) {
@@ -115,7 +118,13 @@ public class Network implements Serializable {
             }
         }
     }
-    
+
+    /**
+     * Mutates the neural network randomly
+     * @param probabilityOfMutation is the probability that each weight is changed
+     * @param maxMutationStrength is the amount a weight is max allowed to change
+     */
+
     public void mutate(double probabilityOfMutation, double maxMutationStrength) {
         for (double[][] weightArray2D : weights) {
             for (double[] weightArray : weightArray2D) {
@@ -157,7 +166,6 @@ public class Network implements Serializable {
      * @return Array containing output layer activations
      */
     public double[] getResult(double[] input) {
-        // removed clone, since currentLayerActivations is not mutated
         Objects.requireNonNull(input);
         double[] currentLayerActivations = input;
 
@@ -191,14 +199,16 @@ public class Network implements Serializable {
 
         return currentLayerActivations;
     }
-    
+
+    /**
+     * @return a deep copy of the networks weights
+     */
     public double[][][] getWeightClone() {
         double[][][] weightClone = new double[size - 1][][];
         
         for (int layerIdx = 0; layerIdx < size - 1; layerIdx++) {
             int inputCount = layers[layerIdx].length() + 1;
-            int outputCount = layers[layerIdx + 1].length();
-            weightClone[layerIdx] = new double[inputCount][]; // alternative: new double[inputCount][outputCount]
+            weightClone[layerIdx] = new double[inputCount][];
             
             for (int inputIdx = 0; inputIdx < inputCount; inputIdx++) {
                 weightClone[layerIdx][inputIdx] = weights[layerIdx][inputIdx].clone();
@@ -207,6 +217,10 @@ public class Network implements Serializable {
         
         return weightClone;
     }
+
+    /**
+     * Draw the neural network with its neurons and weights on a canvas
+     */
 
     public void draw(Canvas canvas, double neuronRadius, double maxLineWidth) {
         var gc = canvas.getGraphicsContext2D();

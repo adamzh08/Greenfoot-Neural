@@ -5,10 +5,16 @@ import de.adamyan.antsimulation.Ant;
 
 public class Ray {
 
+    /**
+     *
+     * @param ant is the Ant object where the ray comes from
+     * @param rayIdx is the index of the ray (anticlockwise)
+     * @return a RayCast
+     */
     public static RayCast cast(Ant ant, int rayIdx) {
 
-        double d = rayIdx / (double) Ant.RAY_COUNT;
-        double offsetAngle = (-Ant.FIELD_OF_VIEW_PERCENTAGE / 2 + d * Ant.FIELD_OF_VIEW_PERCENTAGE) * Math.TAU;
+        double rayIdx_between0And1 = rayIdx / (double) Ant.RAY_COUNT;
+        double offsetAngle = (Ant.FIELD_OF_VIEW_PERCENTAGE * (0.5 - rayIdx_between0And1)) * Math.TAU;
 
         return new RayCast(
                 ant.getX(),
@@ -20,6 +26,9 @@ public class Ray {
     }
 
 
+    /**
+     * @return the intersection coordinates of 2 straight walls (used to check if ant crosses wall while moving)
+     */
     @AIGenerated
     public static double[] intersectionCoordinates(LineSegmentWall path, LineSegmentWall wall) {
         double x1 = path.startX(), y1 = path.startY();
