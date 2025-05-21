@@ -68,19 +68,9 @@ public class GameManager {
      * @return generation finished
      */
     public boolean frame_logic() {
-        Thread[] antThread = new Thread[antPopulation.size()];
-        for (int i = 0; i < antPopulation.size(); i++) {
-            int finalI = i;
-            antThread[i] = Thread.startVirtualThread(() -> antPopulation.get(finalI).act(genFramesLeft / (double) GENERATION_DURATION_FRAMES));
-        }
-
-        for (Thread thread : antThread) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        antPopulation.parallelStream().forEach(ant ->
+                ant.act(genFramesLeft / (double) GENERATION_DURATION_FRAMES)
+        );
 
         // decrease time left for generation and make a new if the time is up
         genFramesLeft--;

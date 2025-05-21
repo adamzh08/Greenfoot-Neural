@@ -2,6 +2,7 @@ package de.adamyan.antsimulation;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -141,6 +143,7 @@ public class Main extends Application {
 
     public void generateWindow_main() {
         canvas = new Canvas(1000, 800);
+        canvas.setOnMouseClicked(mouseEvent -> {});
 
         Button resetButton = new Button("New simulation");
         resetButton.setScaleX(2);
