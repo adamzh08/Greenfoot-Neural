@@ -2,7 +2,6 @@ package de.adamyan.antsimulation;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -10,12 +9,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
 
@@ -35,13 +34,23 @@ public class Main extends Application {
     // ---------------------- other fields ---------------------------
     private GameManager gameManager;
 
+    private AnimationTimer frameTimer_visible;
+    private Timer frameTimer_invisible;
+    private boolean visibleMode = true;
 
 
     private void start_simulation() {
         gameManager = new GameManager();
 
+        if (frameTimer_visible != null) {
+            frameTimer_visible.stop();
+        }
+        stopInvisibleFrameTimer();
+
+        reDrawGenStatsWindow();
+
         // Create a new AnimationTimer, which allows us to run code every frame (like in a game loop)
-        AnimationTimer frameTimer = new AnimationTimer() {
+        frameTimer_visible = new AnimationTimer() {
 
             // This will store the time of the last frame
             private long lastTime_ns;
@@ -52,31 +61,70 @@ public class Main extends Application {
                 double deltaTime_ms = (currentTime_ns - lastTime_ns) / 1e6;
 
                 // Call a method that updates game logic and UI every frame
-                stuffThatHappensEveryFrame(deltaTime_ms);
+                stuffThatHappensEveryFrame(deltaTime_ms, true);
 
                 // Update 'lastTimeInNanoSeconds' for the next frame
                 lastTime_ns = currentTime_ns;
             }
         };
-
-        frameTimer.start();
+        frameTimer_visible.start();
     }
 
 
-    private void stuffThatHappensEveryFrame(double deltaTime) {
-        boolean genFinished = gameManager.act(canvas, deltaTime);
+    private void changeVisibilityMode() {
+        visibleMode = !visibleMode;
 
-        // Game window
-        fpsText.setText("FPS: " + Math.round(1000 / deltaTime));
+        if (visibleMode) {
+            stopInvisibleFrameTimer();
+            frameTimer_visible.start();
+            reDrawGenStatsWindow();
+        } else {
+            frameTimer_visible.stop();
+            stopInvisibleFrameTimer();
 
-        // Ant stats window
-        antAmountText.setText("Ant count: " + gameManager.getAntPopulation().size());
-
-        // gen stats window
-        if (genFinished) {
-            generationAmountText.setText("Gen count: " + gameManager.getGenCount());
-            gameManager.getAntPopulation().getFirst().getNetwork().draw(antNetworkVisualisationCanvas, 10, 5);
+            frameTimer_invisible.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    stuffThatHappensEveryFrame(-1, false);
+                }
+            }, 0, 1);
         }
+    }
+
+    private void stopInvisibleFrameTimer() {
+        if (frameTimer_invisible != null) {
+            frameTimer_invisible.cancel();
+        }
+        frameTimer_invisible = new Timer();
+    }
+
+    private void stuffThatHappensEveryFrame(double deltaTime, boolean shouldDraw) {
+
+        double startTime = System.nanoTime();
+        boolean genFinished = gameManager.frame_logic();
+        System.out.println("Logic: " + (System.nanoTime() - startTime) / 1e6 + "ms");
+
+        if (shouldDraw) {
+            startTime = System.nanoTime();
+            gameManager.draw(canvas);
+            System.out.println("Draw: " + (System.nanoTime() - startTime) / 1e6 + "ms");
+
+            // Game window
+            fpsText.setText("FPS: " + Math.round(1000 / deltaTime));
+
+            // Ant stats window
+            antAmountText.setText("Ant count: " + gameManager.getAntPopulation().size());
+
+            // gen stats window
+            if (genFinished) {
+                reDrawGenStatsWindow();
+            }
+        }
+    }
+
+    private void reDrawGenStatsWindow() {
+        generationAmountText.setText("Gen count: " + gameManager.getGenCount());
+        gameManager.getAntPopulation().getFirst().getNetwork().draw(antNetworkVisualisationCanvas, 10, 5);
     }
 
     @Override
@@ -99,7 +147,7 @@ public class Main extends Application {
         resetButton.setScaleY(2);
         resetButton.setLayoutX(50);
         resetButton.setLayoutY(835.5);
-        resetButton.setOnMouseClicked(mouseEvent -> gameManager = new GameManager());
+        resetButton.setOnMouseClicked(mouseEvent -> start_simulation());
 
         fpsText = new Text("FPS: undefined");
         fpsText.setFont(new Font(20));
@@ -132,8 +180,7 @@ public class Main extends Application {
         antNetwork.setLayoutY(90);
 
         Button toggleRaysButton = new Button("Toggle rays on");
-        // eine sigma oneline button
-        toggleRaysButton.setOnMouseClicked(mouseEvent -> toggleRaysButton.setText((Ant.shouldDrawRays = !Ant.shouldDrawRays)? "Toggle rays off" : "Toggle rays on"));
+        toggleRaysButton.setOnMouseClicked(mouseEvent -> toggleRaysButton.setText((GameManager.shouldDrawRays = !GameManager.shouldDrawRays)? "Toggle rays off" : "Toggle rays on"));
         toggleRaysButton.setFont(new Font(20));
         toggleRaysButton.setLayoutX(300);
         toggleRaysButton.setLayoutY(120);
@@ -166,7 +213,13 @@ public class Main extends Application {
         generationAmountText.setLayoutX(30);
         generationAmountText.setLayoutY(430);
 
-        Stage genStatsStage = getWindow(500, 500, antNetworkVisualisationCanvas, generationAmountText);
+        Button visibilityButton = new Button("Change visibility");
+        visibilityButton.setLayoutX(250);
+        visibilityButton.setLayoutY(400);
+        visibilityButton.setFont(new Font(20));
+        visibilityButton.setOnMouseClicked(mouseEvent -> changeVisibilityMode());
+
+        Stage genStatsStage = getWindow(500, 500, antNetworkVisualisationCanvas, generationAmountText, visibilityButton);
         genStatsStage.setX(200);
         genStatsStage.setY(100);
         genStatsStage.setTitle("Gen stats");

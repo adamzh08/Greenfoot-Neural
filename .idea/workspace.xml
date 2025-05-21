@@ -9,11 +9,7 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/ActivationFunction_I.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/ActivationFunction_I.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/Network.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/Network.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/LineSegmentWall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/LineSegmentWall.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Ray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Ray.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/RayCast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/RayCast.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +45,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "JavaFX",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/yanam/IdeaProjects/TurnBasedGame"
+    "last_opened_file_path": "C:/Users/yanam/IdeaProjects/Greenfoot-Neural"
   }
 }]]></component>
   <component name="RunManager">

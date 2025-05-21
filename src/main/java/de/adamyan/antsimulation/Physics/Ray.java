@@ -13,14 +13,13 @@ public class Ray {
      */
     public static RayCast cast(Ant ant, int rayIdx) {
 
-        double rayIdx_between0And1 = rayIdx / (double) Ant.RAY_COUNT;
-        double offsetAngle = (Ant.FIELD_OF_VIEW_PERCENTAGE * (0.5 - rayIdx_between0And1)) * Math.TAU;
+        double rayAngle = ant.getAngleOfRay(rayIdx);
 
         return new RayCast(
                 ant.getX(),
                 ant.getY(),
-                Math.cos(ant.getAngle() + offsetAngle),
-                Math.sin(ant.getAngle() + offsetAngle),
+                Math.cos(rayAngle),
+                Math.sin(rayAngle),
                 Ant.MAX_RAY_TRAVEL_DISTANCE
         );
     }

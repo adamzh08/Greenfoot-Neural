@@ -14,9 +14,9 @@ public class Ant {
     /// Ant settings
     public static final int RAY_COUNT = 16;
     public static final double MAX_RAY_TRAVEL_DISTANCE = 100;
-    public static final int MAX_ANT_SPEED = 1;
+    public static final int MAX_ANT_SPEED = 2;
     public static final double MAX_DELTA_ANGLE_PER_FRAME = Math.toRadians(10);
-    public static final double FIELD_OF_VIEW_PERCENTAGE = 150 / 360.;
+    public static final double FIELD_OF_VIEW_PERCENTAGE = 90 / 360.;
 
 
     public static final Network DEFAULT_NETWORK =
@@ -26,17 +26,11 @@ public class Ant {
                             // +1 for linear time progress (beginning = 0, end = 1)
                             new Layer(RAY_COUNT +1 +1, ActivationFunctions::linear), // rays as input
                             new Layer(4, ActivationFunctions::relu),
-
                             // +1 for rotation change
                             // +1 for velocity
                             new Layer(+1 +1, ActivationFunctions::tanh) // angle as single output
                     }
             );
-
-
-    /// Debug/Test tool to see the rays
-    public static boolean shouldDrawRays = false;
-
 
     private final GameManager gameManager;
 
@@ -62,10 +56,8 @@ public class Ant {
      *
      * @return Array of distances the rays traveled
      */
-    public double[] getRayDistances(GraphicsContext gc) {
+    public double[] getRayDistances() {
         double[] distances = new double[RAY_COUNT];
-
-        gc.setLineWidth(0.1);
 
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
             double[] hitCoordinates = Ray.cast(this, rayIdx).getIntersection(gameManager);
@@ -74,11 +66,6 @@ public class Ant {
                     (getX() - hitCoordinates[0]) * (getX() - hitCoordinates[0])
                             + (getY() - hitCoordinates[1]) * (getY() - hitCoordinates[1])
             );
-
-            if (shouldDrawRays) {
-                gc.setStroke(Color.RED);
-                gc.strokeLine(getX(), getY(), hitCoordinates[0], hitCoordinates[1]);
-            }
         }
         return distances;
     }
@@ -86,17 +73,15 @@ public class Ant {
     /// Converts a distance in pixels to a NN input in range [0; 1]
 
     private double rayDistanceToNNInput(double rayDistance) {
-        // to be perfected
         return (MAX_RAY_TRAVEL_DISTANCE - rayDistance) / MAX_RAY_TRAVEL_DISTANCE;
     }
 
     /**
-     * @param gc is the canvas where you can draw stuff
      * @param timeProgress in range [0; 1] where 0 = just born, 1 = dead
      */
-    public void act(GraphicsContext gc, double timeProgress) {
+    public void act(double timeProgress) {
 
-        double[] rayDistancesTraveled = getRayDistances(gc);
+        double[] rayDistancesTraveled = getRayDistances();
 
         double[] inputsToNN = new double[network.getLayers()[0].length()];
 
@@ -107,7 +92,7 @@ public class Ant {
 
         // last for internal compass
         inputsToNN[inputsToNN.length - 2] = rotationAngle; // current rotation
-        inputsToNN[inputsToNN.length - 1] = timeProgress;
+        inputsToNN[inputsToNN.length - 1] = timeProgress;  // time left to live
 
         double[] networkResults = network.getResult(inputsToNN);
 
@@ -152,6 +137,18 @@ public class Ant {
         position[1] = Math.min(position[1], 800);
     }
 
+    public void draw_rays(GraphicsContext gc) {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(0.1);
+
+        for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
+            double[] hitCoordinates = Ray.cast(this, rayIdx).getIntersection(gameManager);
+
+            gc.setStroke(Color.RED);
+            gc.strokeLine(getX(), getY(), hitCoordinates[0], hitCoordinates[1]);
+        }
+    }
+
     public double getReward() {
         double progress = getX() / 1000;
 
@@ -162,6 +159,11 @@ public class Ant {
         amountOfWallCollisions = 0;
         rotationAngle = 0;
         position = new double[]{50, 400};
+    }
+    public double getAngleOfRay(int rayIdx) {
+        double rayIdx_between0And1 = rayIdx / (double) Ant.RAY_COUNT;
+        double offsetAngle = (Ant.FIELD_OF_VIEW_PERCENTAGE * (rayIdx_between0And1 - 0.5)) * Math.TAU;
+        return getAngle() + offsetAngle;
     }
 
     public void setNetwork(Network newNet) {

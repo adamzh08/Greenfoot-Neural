@@ -18,12 +18,18 @@ public class GameManager {
 
     private static final Image antImage = new Image("ant.png");
 
-    private static final int initialPopulationSize = 3000;
-    private static final int wallAmount = 10;
 
-    private static final int generationDuration_ms = 30 * 1000;
-    private double genTimeLeft_ms;
+    /// Debug/Test tool to see the rays
+    public static boolean shouldDrawRays = true;
+    /// ------------------ world settings ------------------
+    private static final int initialPopulationSize = 10000;
+    private static final int wallAmount = 10;
+    private static final int GENERATION_DURATION_FRAMES = 20 * 60;
+    private int genFramesLeft;
     private int genCount;
+
+    /// ------------------ genetic algorithm settings ------------------
+    private static final double percentageOfAgentsThatPassAutomatically = 0.10;
 
     private List<Ant> antPopulation;
 
@@ -32,7 +38,6 @@ public class GameManager {
      * Great because: Ray interceptions point can be computed fast with a few math operations and no loops
      */
     private List<LineSegmentWall> walls;
-
 
 
     public GameManager() {
@@ -47,19 +52,48 @@ public class GameManager {
         walls.add(new LineSegmentWall(1000, 800, 1000, 0));
         walls.add(new LineSegmentWall(1000, 0, 0, 0));
 
+        walls.add(new LineSegmentWall(300, 0, 300, 301));
+        walls.add(new LineSegmentWall(300, 500, 300, 801));
+
         antPopulation = new ArrayList<>();
         for (int i = 0; i < initialPopulationSize; i++) {
             antPopulation.add(new Ant(this));
         }
 
         genCount = 0;
-        genTimeLeft_ms = generationDuration_ms;
+        genFramesLeft = GENERATION_DURATION_FRAMES;
     }
 
     /**
      * @return generation finished
      */
-    public boolean act(Canvas canvas, double deltaTime) {
+    public boolean frame_logic() {
+        Thread[] antThread = new Thread[antPopulation.size()];
+        for (int i = 0; i < antPopulation.size(); i++) {
+            int finalI = i;
+            antThread[i] = Thread.startVirtualThread(() -> antPopulation.get(finalI).act(genFramesLeft / (double) GENERATION_DURATION_FRAMES));
+        }
+
+        for (Thread thread : antThread) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // decrease time left for generation and make a new if the time is up
+        genFramesLeft--;
+        if (genFramesLeft == 0) {
+            finishGen();
+            genCount++;
+            genFramesLeft = GENERATION_DURATION_FRAMES;
+            return true;
+        }
+        return false;
+    }
+
+    public void draw(Canvas canvas) {
         var gc = canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -75,26 +109,18 @@ public class GameManager {
             gc.strokeLine(wall.startX(), wall.startY(), wall.endX(), wall.endY());
         }
 
-
-        // let each ant cook and draw them
-        for (Ant ant : antPopulation) {
-            ant.act(gc, genTimeLeft_ms / generationDuration_ms);
-        }
         drawAnts(gc);
+        if (shouldDrawRays) {
+            for (Ant ant : antPopulation) {
+                ant.draw_rays(canvas.getGraphicsContext2D());
+            }
+        }
+        gc.setFill(new Color(0, 1, 0, 0.5));
+        gc.fillOval(antPopulation.getFirst().getX() - 10, antPopulation.getFirst().getY() - 10, 20, 20);
 
         // display the time left in seconds
         gc.setFont(new Font(50));
-        gc.fillText((int)(genTimeLeft_ms / 1000) + "", 50, 50);
-
-        // decrease time left for generation and make a new if the time is up
-        genTimeLeft_ms -= deltaTime;
-        if (genTimeLeft_ms <= 0) {
-            finishGen();
-            genCount++;
-            genTimeLeft_ms = generationDuration_ms;
-            return true;
-        }
-        return false;
+        gc.fillText(genFramesLeft / 60 + "", 50, 50);
     }
 
 
@@ -104,12 +130,8 @@ public class GameManager {
     private void finishGen() {
         antPopulation.sort((ant1, ant2) -> Double.compare(ant2.getReward(), ant1.getReward()));
 
-        // best 5%
-        int bestIdx = (int) (antPopulation.size() * 0.05);
-
-        // half of the population dies
-        int deadIdx = (int) (antPopulation.size() * 0.5);
-
+        // best x%
+        int bestIdx = (int) (antPopulation.size() * percentageOfAgentsThatPassAutomatically);
 
         for (int i = 0; i < bestIdx; i++) {
             // do nothing, these individuals remain as they are
@@ -119,30 +141,19 @@ public class GameManager {
         Ant[] newChildren = new Ant[antPopulation.size() - bestIdx];
 
         for (int i = bestIdx; i < antPopulation.size(); i++) {
-
-            // randomly select a mom ant
-            Ant momAnt = antPopulation.get((int) (
-                    Math.random() * deadIdx
-            ));
-            Ant dadAnt = antPopulation.get((int) (
-                    Math.random() * deadIdx
-            ));
-
-            // shift the reward to make them positive and comparable between mom and dad
-            double dadRewardPositive = dadAnt.getReward() - Math.min(dadAnt.getReward(), momAnt.getReward());
-            double momRewardPositive = momAnt.getReward() - Math.min(dadAnt.getReward(), momAnt.getReward());
-
-            double papaProbability = dadRewardPositive / (dadRewardPositive + momRewardPositive);
+            // randomly select parent ants
+            Ant momAnt = getBestAntOfKRandom(antPopulation, 50);
+            Ant dadAnt = getBestAntOfKRandom(antPopulation, 50);
 
             Ant childAnt = new Ant(this);
-            childAnt.setNetwork(new Network(momAnt.getNetwork(), dadAnt.getNetwork(), papaProbability));
+            childAnt.setNetwork(new Network(momAnt.getNetwork(), dadAnt.getNetwork(), momAnt.getReward() > dadAnt.getReward() ? 0.35 : 0.65));
 
             childAnt.getNetwork().mutate(0.05, 0.4);
 
             newChildren[i - bestIdx] = childAnt;
         }
 
-        // replace the last generation with the new children (excluding the top 5%)
+        // replace the last generation with the new children (excluding the top x%)
         for (int i = 0; i < newChildren.length; i++) {
             antPopulation.set(bestIdx + i, newChildren[i]);
         }
@@ -151,6 +162,23 @@ public class GameManager {
         for (Ant ant : antPopulation) {
             ant.resetGenerationSpecificFields();
         }
+    }
+
+    private Ant getBestAntOfKRandom(List<Ant> antPool, int k) {
+        Ant bestAnt = null;
+        double largestRewardSoFar = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < k; i++) {
+            Ant randomAnt = antPool.get((int) (
+                    Math.random() * antPool.size()
+            ));
+            double reward = randomAnt.getReward();
+
+            if (reward > largestRewardSoFar) {
+                largestRewardSoFar = reward;
+                bestAnt = randomAnt;
+            }
+        }
+        return bestAnt;
     }
 
     private void drawAnts(GraphicsContext gc) {
@@ -166,9 +194,11 @@ public class GameManager {
     public List<LineSegmentWall> getWalls() {
         return walls;
     }
+
     public List<Ant> getAntPopulation() {
         return antPopulation;
     }
+
     public int getGenCount() {
         return genCount;
     }
