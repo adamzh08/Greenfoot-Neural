@@ -2,6 +2,7 @@ package de.adamyan.antsimulation;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -11,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -85,11 +87,31 @@ public class Main extends Application {
             stopInvisibleFrameTimer();
 
             frameTimer_invisible.scheduleAtFixedRate(new TimerTask() {
+                long lastTime_ns = System.nanoTime();
+
                 @Override
                 public void run() {
-                    stuffThatHappensEveryFrame(-1, false);
+                    long currTime_ns = System.nanoTime();
+                    stuffThatHappensEveryFrame((currTime_ns - lastTime_ns) / 1e6, false);
+                    lastTime_ns = currTime_ns;
                 }
             }, 0, 1);
+
+            // pause triangle
+            canvas.getGraphicsContext2D().setFill(new Color(0.4, 0.4, 0.4, 0.4));
+            canvas.getGraphicsContext2D().fillPolygon(
+                    new double[]{
+                            400,
+                            500 + Math.sqrt(3) / 2 * 100,
+                            400
+                    },
+                    new double[]{
+                            500,
+                            400,
+                            300
+                    },
+                    3
+            );
         }
     }
 
@@ -101,16 +123,11 @@ public class Main extends Application {
     }
 
     private void stuffThatHappensEveryFrame(double deltaTime, boolean shouldDraw) {
-
         double startTime = System.nanoTime();
         boolean genFinished = gameManager.frame_logic();
         System.out.println("Logic: " + (System.nanoTime() - startTime) / 1e6 + "ms");
 
-        if (shouldDraw) {
-            startTime = System.nanoTime();
-            gameManager.draw(canvas);
-            System.out.println("Draw: " + (System.nanoTime() - startTime) / 1e6 + "ms");
-
+        Platform.runLater(() -> {
             // Game window
             fpsText.setText("FPS: " + Math.round(1000 / deltaTime));
 
@@ -121,6 +138,12 @@ public class Main extends Application {
             if (genFinished) {
                 reDrawGenStatsWindow();
             }
+        });
+
+        if (shouldDraw) {
+            startTime = System.nanoTime();
+            gameManager.draw(canvas);
+            System.out.println("Draw: " + (System.nanoTime() - startTime) / 1e6 + "ms");
         }
     }
 
@@ -143,7 +166,6 @@ public class Main extends Application {
 
     public void generateWindow_main() {
         canvas = new Canvas(1000, 800);
-        canvas.setOnMouseClicked(mouseEvent -> {});
 
         Button resetButton = new Button("New simulation");
         resetButton.setScaleX(2);
@@ -165,6 +187,7 @@ public class Main extends Application {
         Stage mainStage = getWindow(1000, 900, canvas, resetButton, fpsText, goalText);
         mainStage.setTitle("God simulator");
     }
+
     public void generateWidow_antSettings() {
         antAmountText = new Text("Ant count: undefined");
         antAmountText.setFont(new Font(30));
@@ -183,7 +206,7 @@ public class Main extends Application {
         antNetwork.setLayoutY(90);
 
         Button toggleRaysButton = new Button("Toggle rays on");
-        toggleRaysButton.setOnMouseClicked(mouseEvent -> toggleRaysButton.setText((GameManager.shouldDrawRays = !GameManager.shouldDrawRays)? "Toggle rays off" : "Toggle rays on"));
+        toggleRaysButton.setOnMouseClicked(mouseEvent -> toggleRaysButton.setText((GameManager.shouldDrawRays = !GameManager.shouldDrawRays) ? "Toggle rays off" : "Toggle rays on"));
         toggleRaysButton.setFont(new Font(20));
         toggleRaysButton.setLayoutX(300);
         toggleRaysButton.setLayoutY(120);
@@ -208,6 +231,7 @@ public class Main extends Application {
 
         antStatsStage.show();
     }
+
     public void generateWindow_genStats() {
         antNetworkVisualisationCanvas = new Canvas(500, 400);
 
@@ -227,6 +251,7 @@ public class Main extends Application {
         genStatsStage.setY(100);
         genStatsStage.setTitle("Gen stats");
     }
+
     public Stage getWindow(int width, int height, Node... nodes) {
         Group root = new Group(nodes);
         Scene scene = new Scene(root, width, height);

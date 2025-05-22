@@ -6,11 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="c3346fcd-228e-453a-89a0-052032e72fb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/AntSimulation-1.0-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +43,7 @@
   "keyToString": {
     "Application.Normal.executor": "Run",
     "Maven.AntSimulation [clean].executor": "Run",
+    "Maven.AntSimulation [deploy].executor": "Run",
     "Maven.AntSimulation [package].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "JavaFX",
@@ -51,7 +51,7 @@
     "last_opened_file_path": "C:/Users/yanam/IdeaProjects/Greenfoot-Neural"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Normal">
     <configuration name="Normal" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="21" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -61,6 +61,40 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AntSimulation [deploy]" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="deploy" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" value="pom.xml" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Normal" />
+      <item itemvalue="Maven.AntSimulation [deploy]" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

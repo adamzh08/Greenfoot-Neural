@@ -20,7 +20,7 @@ public class GameManager {
 
 
     /// Debug/Test tool to see the rays
-    public static boolean shouldDrawRays = true;
+    public static boolean shouldDrawRays = false;
     /// ------------------ world settings ------------------
     private static final int initialPopulationSize = 10000;
     private static final int wallAmount = 10;
