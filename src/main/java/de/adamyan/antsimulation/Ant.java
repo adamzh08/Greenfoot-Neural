@@ -1,10 +1,11 @@
 package de.adamyan.antsimulation;
 
 import de.adamyan.antsimulation.NN.*;
-import de.adamyan.antsimulation.Physics.LineSegmentWall;
-import de.adamyan.antsimulation.Physics.Ray;
+import de.adamyan.antsimulation.Physics.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.util.Optional;
 
 /**
  * One single agent
@@ -13,24 +14,21 @@ public class Ant {
 
     /// Ant settings
     public static final int RAY_COUNT = 16;
-    public static final double MAX_RAY_TRAVEL_DISTANCE = 100;
-    public static final int MAX_ANT_SPEED = 2;
+    public static final double MAX_RAY_TRAVEL_DISTANCE = 200;
+    public static final int MAX_ANT_SPEED = 3;
     public static final double MAX_DELTA_ANGLE_PER_FRAME = Math.toRadians(10);
-    public static final double FIELD_OF_VIEW_PERCENTAGE = 90 / 360.;
+    public static final double FIELD_OF_VIEW_PERCENTAGE = 50 / 360.;
 
 
-    public static final Network DEFAULT_NETWORK =
-            new Network(
-                    new Layer[]{
-                            // +1 for internal compass (own current rotation)
-                            // +1 for linear time progress (beginning = 0, end = 1)
-                            new Layer(RAY_COUNT +1 +1, ActivationFunctions::linear), // rays as input
-                            new Layer(4, ActivationFunctions::relu),
-                            // +1 for rotation change
-                            // +1 for velocity
-                            new Layer(+1 +1, ActivationFunctions::tanh) // angle as single output
-                    }
-            );
+    public static final Layer[] LAYERS = {
+            // +1 for internal compass (own current rotation)
+            // +1 for linear time progress (beginning = 0, end = 1)
+            new Layer(RAY_COUNT + 1 + 1, ActivationFunctions::linear), // rays as input
+            new Layer(4, ActivationFunctions::relu),
+            // +1 for rotation change
+            // +1 for velocity
+            new Layer(+1 + 1, ActivationFunctions::tanh) // angle as single output
+    };
 
     private final GameManager gameManager;
 
@@ -38,7 +36,7 @@ public class Ant {
     /// The ant's brain
     private Network network;
 
-    private double[] position;
+    private Vector2D position;
     private double rotationAngle;
 
     private int amountOfWallCollisions;
@@ -46,7 +44,7 @@ public class Ant {
     public Ant(GameManager gameManager) {
         this.gameManager = gameManager;
 
-        network = new Network(DEFAULT_NETWORK.getLayers());
+        network = new Network(LAYERS);
 
         resetGenerationSpecificFields();
     }
@@ -60,18 +58,22 @@ public class Ant {
         double[] distances = new double[RAY_COUNT];
 
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
-            double[] hitCoordinates = Ray.cast(this, rayIdx).getIntersection(gameManager);
+            RayCast rayCast = castWithIndex(rayIdx);
+            Optional<double[]> hitCoordinates = rayCast.getIntersection(gameManager);
+
+            if (hitCoordinates.isEmpty()) {
+                hitCoordinates = Optional.of(new double[]{getX() + rayCast.cosAngle() * rayCast.length(), getY() + rayCast.sinAngle() * rayCast.length()});
+            }
 
             distances[rayIdx] = Math.sqrt(
-                    (getX() - hitCoordinates[0]) * (getX() - hitCoordinates[0])
-                            + (getY() - hitCoordinates[1]) * (getY() - hitCoordinates[1])
+                    (getX() - hitCoordinates.get()[0]) * (getX() - hitCoordinates.get()[0])
+                            + (getY() - hitCoordinates.get()[1]) * (getY() - hitCoordinates.get()[1])
             );
         }
         return distances;
     }
 
-    /// Converts a distance in pixels to a NN input in range [0; 1]
-
+    /// Converts a distance in pixels to a NN input in range [0;1]
     private double rayDistanceToNNInput(double rayDistance) {
         return (MAX_RAY_TRAVEL_DISTANCE - rayDistance) / MAX_RAY_TRAVEL_DISTANCE;
     }
@@ -105,47 +107,48 @@ public class Ant {
     }
 
     /**
-     * Moves the ant with wall checks
+     * Moves the ant with wallVector checks
+     *
      * @param speed is distance in pixels the ant will travel this frame
      */
+
     private void move(double speed) {
-        // default next position
-        double[] nextFramePosition = {
-                position[0] + Math.cos(rotationAngle) * speed,
-                position[1] + Math.sin(rotationAngle) * speed
-        };
+        Vector2D addedPosition = new Vector2D(
+                Math.cos(rotationAngle) * speed,
+                Math.sin(rotationAngle) * speed
+        );
 
-        LineSegmentWall path = new LineSegmentWall(position[0], position[1], nextFramePosition[0], nextFramePosition[1]);
+        Optional<double[]> intersection = new RayCast(
+                getX(),
+                getY(),
+                rotationAngle,
+                Math.cos(rotationAngle),
+                Math.sin(rotationAngle),
+                addedPosition.magnitude()
+        ).getIntersection(gameManager);
 
-        for (LineSegmentWall wall : gameManager.getWalls()) {
-            double[] pathWallIntersection = Ray.intersectionCoordinates(path, wall);
-
-            if (pathWallIntersection != null) {
-                amountOfWallCollisions++;
-                rotationAngle += Math.PI; // 180° rotation (bounce), not the most optimal solution
-
-                nextFramePosition = position; // the ant will not move this frame
-                break;
-            }
+        if (intersection.isEmpty()) {
+            position.add(addedPosition);
+        } else {
+            gameManager.disableAnt(this);
         }
-
-        position = nextFramePosition;
-
-        position[0] = Math.max(position[0], 0);
-        position[0] = Math.min(position[0], 1000);
-        position[1] = Math.max(position[1], 0);
-        position[1] = Math.min(position[1], 800);
     }
+
 
     public void draw_rays(GraphicsContext gc) {
         gc.setStroke(Color.RED);
         gc.setLineWidth(0.1);
 
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
-            double[] hitCoordinates = Ray.cast(this, rayIdx).getIntersection(gameManager);
+            RayCast rayCast = castWithIndex(rayIdx);
+            Optional<double[]> hitCoordinates = rayCast.getIntersection(gameManager);
+
+            if (hitCoordinates.isEmpty()) {
+                hitCoordinates = Optional.of(new double[]{getX() + rayCast.cosAngle() * rayCast.length(), getY() + +rayCast.sinAngle() * rayCast.length()});
+            }
 
             gc.setStroke(Color.RED);
-            gc.strokeLine(getX(), getY(), hitCoordinates[0], hitCoordinates[1]);
+            gc.strokeLine(getX(), getY(), hitCoordinates.get()[0], hitCoordinates.get()[1]);
         }
     }
 
@@ -158,8 +161,21 @@ public class Ant {
     public void resetGenerationSpecificFields() {
         amountOfWallCollisions = 0;
         rotationAngle = 0;
-        position = new double[]{50, 400};
+        position = new Vector2D(500, 400);
     }
+
+    public RayCast castWithIndex(int rayIdx) {
+        double rayAngle = getAngleOfRay(rayIdx);
+        return new RayCast(
+                getX(),
+                getY(),
+                rayAngle,
+                Math.cos(rayAngle),
+                Math.sin(rayAngle),
+                Ant.MAX_RAY_TRAVEL_DISTANCE
+        );
+    }
+
     public double getAngleOfRay(int rayIdx) {
         double rayIdx_between0And1 = rayIdx / (double) Ant.RAY_COUNT;
         double offsetAngle = (Ant.FIELD_OF_VIEW_PERCENTAGE * (rayIdx_between0And1 - 0.5)) * Math.TAU;
@@ -169,15 +185,19 @@ public class Ant {
     public void setNetwork(Network newNet) {
         network = newNet;
     }
+
     public Network getNetwork() {
         return network;
     }
+
     public double getX() {
-        return position[0];
+        return position.x();
     }
+
     public double getY() {
-        return position[1];
+        return position.y();
     }
+
     public double getAngle() {
         return rotationAngle;
     }

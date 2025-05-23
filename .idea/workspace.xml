@@ -5,16 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3346fcd-228e-453a-89a0-052032e72fb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/CircleWall.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Intersection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Utils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Vector2D.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/AntSimulation-1.0-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/LineSegmentWall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/LineSegmentWall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Ray.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/RayCast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/RayCast.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Record" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -117,5 +131,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/CircleWall.java</url>
+          <line>13</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -17,6 +17,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -132,7 +134,7 @@ public class Main extends Application {
             fpsText.setText("FPS: " + Math.round(1000 / deltaTime));
 
             // Ant stats window
-            antAmountText.setText("Ant count: " + gameManager.getAntPopulation().size());
+            antAmountText.setText("Ant count: " + gameManager.getAntPopulation().stream().filter(Objects::nonNull).count() + "/" + GameManager.POPULATION_SIZE);
 
             // gen stats window
             if (genFinished) {
@@ -149,7 +151,7 @@ public class Main extends Application {
 
     private void reDrawGenStatsWindow() {
         generationAmountText.setText("Gen count: " + gameManager.getGenCount());
-        gameManager.getAntPopulation().getFirst().getNetwork().draw(antNetworkVisualisationCanvas, 10, 5);
+        gameManager.getBestAnt().getNetwork().draw(antNetworkVisualisationCanvas, 10, 5);
     }
 
     @Override
@@ -179,7 +181,7 @@ public class Main extends Application {
         fpsText.setLayoutX(200);
         fpsText.setLayoutY(850);
 
-        Text goalText = new Text("Goal: be at the right wall when the time is over");
+        Text goalText = new Text("Goal: be at the right wallVector when the time is over");
         goalText.setFont(new Font(20));
         goalText.setLayoutX(400);
         goalText.setLayoutY(850);
@@ -200,7 +202,7 @@ public class Main extends Application {
         antRayAmount.setLayoutY(60);
 
 
-        Text antNetwork = new Text("Brain structure: " + Ant.DEFAULT_NETWORK);
+        Text antNetwork = new Text("Brain structure: " + Arrays.toString(Ant.LAYERS));
         antNetwork.setFont(new Font(30));
         antNetwork.setLayoutX(30);
         antNetwork.setLayoutY(90);
