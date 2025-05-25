@@ -16,17 +16,17 @@ public final class Intersection {
      * @param t2 y-Intercept of the second line
      * @return the intersection coordinates {x, y} if there are any
      */
-    public static Optional<double[]> line_line(double m1, double t1, double m2, double t2) {
-        if (m1 == m2) {
+    public static Optional<Vector2D> line_line(double m1, double t1, double m2, double t2) {
+        if (Double.compare(m1, m2) == 0) {
             return Optional.empty(); // parallel
         }
         double intersection_x = (t2 - t1) / (m1 - m2);
-        double intersection_y = m1 * intersection_x + t1;
-        return Optional.of(new double[]{intersection_x, intersection_y});
+        double intersection_y = m2 * intersection_x + t2;
+        return Optional.of(new Vector2D(intersection_x, intersection_y));
     }
 
-    public static List<double[]> line_circle(double m, double t, CircleWall circle) {
-        List<double[]> intersections = new ArrayList<>();
+    public static List<Vector2D> line_circle(double m, double t, CircleWall circle) {
+        List<Vector2D> intersections = new ArrayList<>();
 
         double r = circle.radius();
         double t_relative = t - circle.centerY() - m * (-circle.centerX());
@@ -43,8 +43,8 @@ public final class Intersection {
         double y1_relative = m * x1_relative + t_relative;
         double y2_relative = m * x2_relative + t_relative;
 
-        intersections.add(new double[]{x1_relative + circle.centerX(), y1_relative + circle.centerY()});
-        intersections.add(new double[]{x2_relative + circle.centerX(), y2_relative + circle.centerY()});
+        intersections.add(new Vector2D(x1_relative + circle.centerX(), y1_relative + circle.centerY()));
+        intersections.add(new Vector2D(x2_relative + circle.centerX(), y2_relative + circle.centerY()));
 
         return intersections;
     }

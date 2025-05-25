@@ -15,10 +15,9 @@ public class Ant {
     /// Ant settings
     public static final int RAY_COUNT = 16;
     public static final double MAX_RAY_TRAVEL_DISTANCE = 200;
-    public static final int MAX_ANT_SPEED = 3;
+    public static final int MAX_ANT_SPEED = 5;
     public static final double MAX_DELTA_ANGLE_PER_FRAME = Math.toRadians(10);
     public static final double FIELD_OF_VIEW_PERCENTAGE = 50 / 360.;
-
 
     public static final Layer[] LAYERS = {
             // +1 for internal compass (own current rotation)
@@ -29,6 +28,8 @@ public class Ant {
             // +1 for velocity
             new Layer(+1 + 1, ActivationFunctions::tanh) // angle as single output
     };
+
+    public static Vector2D startPos = new Vector2D(500, 400);
 
     private final GameManager gameManager;
 
@@ -59,16 +60,13 @@ public class Ant {
 
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
             RayCast rayCast = castWithIndex(rayIdx);
-            Optional<double[]> hitCoordinates = rayCast.getIntersection(gameManager);
+            Optional<Vector2D> hitCoordinates = rayCast.getIntersection(gameManager);
 
             if (hitCoordinates.isEmpty()) {
-                hitCoordinates = Optional.of(new double[]{getX() + rayCast.cosAngle() * rayCast.length(), getY() + rayCast.sinAngle() * rayCast.length()});
+                hitCoordinates = Optional.of(new Vector2D(getX() + rayCast.cosAngle() * rayCast.length(), getY() + rayCast.sinAngle() * rayCast.length()));
             }
 
-            distances[rayIdx] = Math.sqrt(
-                    (getX() - hitCoordinates.get()[0]) * (getX() - hitCoordinates.get()[0])
-                            + (getY() - hitCoordinates.get()[1]) * (getY() - hitCoordinates.get()[1])
-            );
+            distances[rayIdx] = Math.hypot(getX() - hitCoordinates.get().x(), getY() - hitCoordinates.get().x());
         }
         return distances;
     }
@@ -118,13 +116,10 @@ public class Ant {
                 Math.sin(rotationAngle) * speed
         );
 
-        Optional<double[]> intersection = new RayCast(
-                getX(),
-                getY(),
+        Optional<Vector2D> intersection = RayCast.of(
+                position,
                 rotationAngle,
-                Math.cos(rotationAngle),
-                Math.sin(rotationAngle),
-                addedPosition.magnitude()
+                addedPosition.magnitude() + 3
         ).getIntersection(gameManager);
 
         if (intersection.isEmpty()) {
@@ -141,14 +136,14 @@ public class Ant {
 
         for (int rayIdx = 0; rayIdx < RAY_COUNT; rayIdx++) {
             RayCast rayCast = castWithIndex(rayIdx);
-            Optional<double[]> hitCoordinates = rayCast.getIntersection(gameManager);
+            Optional<Vector2D> hitCoordinates = rayCast.getIntersection(gameManager);
 
             if (hitCoordinates.isEmpty()) {
-                hitCoordinates = Optional.of(new double[]{getX() + rayCast.cosAngle() * rayCast.length(), getY() + +rayCast.sinAngle() * rayCast.length()});
+                hitCoordinates = Optional.of(new Vector2D(getX() + rayCast.cosAngle() * rayCast.length(), getY() + rayCast.sinAngle() * rayCast.length()));
             }
 
             gc.setStroke(Color.RED);
-            gc.strokeLine(getX(), getY(), hitCoordinates.get()[0], hitCoordinates.get()[1]);
+            gc.strokeLine(getX(), getY(), hitCoordinates.get().x(), hitCoordinates.get().y());
         }
     }
 
@@ -161,17 +156,14 @@ public class Ant {
     public void resetGenerationSpecificFields() {
         amountOfWallCollisions = 0;
         rotationAngle = 0;
-        position = new Vector2D(500, 400);
+        position = startPos.clone();
     }
 
     public RayCast castWithIndex(int rayIdx) {
         double rayAngle = getAngleOfRay(rayIdx);
-        return new RayCast(
-                getX(),
-                getY(),
+        return RayCast.of(
+                position,
                 rayAngle,
-                Math.cos(rayAngle),
-                Math.sin(rayAngle),
                 Ant.MAX_RAY_TRAVEL_DISTANCE
         );
     }

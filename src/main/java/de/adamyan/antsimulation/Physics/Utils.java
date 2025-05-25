@@ -5,9 +5,13 @@ public final class Utils {
         throw new UnsupportedOperationException();
     }
 
-    public static boolean inBounds(double[] pos, double[] bound1, double[] bound2) {
-        boolean xInBounds = inBounds(pos[0], Math.min(bound1[0], bound2[0]), Math.max(bound1[0], bound2[0]));
-        boolean yInBounds = inBounds(pos[1], Math.min(bound1[1], bound2[1]), Math.max(bound1[1], bound2[1]));
+    public static double distSquared(double x, double y) {
+        return x * x + y * y;
+    }
+
+    public static boolean inBounds(Vector2D pos, Vector2D bound1, Vector2D bound2) {
+        boolean xInBounds = inBounds(pos.x(), Math.min(bound1.x(), bound2.x()), Math.max(bound1.x(), bound2.x()));
+        boolean yInBounds = inBounds(pos.y(), Math.min(bound1.y(), bound2.y()), Math.max(bound1.y(), bound2.y()));
         return xInBounds && yInBounds;
     }
 

@@ -25,11 +25,11 @@ public class GameManager {
     /// Debug/Test tool to see the rays
     public static boolean shouldDrawRays = false;
     /// ------------------ world settings ------------------
-    public static final int POPULATION_SIZE = 1000;
-    private static final int STRAIGHT_WALL_AMOUNT = 0;
-    private static final int CIRCLE_WALL_AMOUNT = 0;
+    public static final int POPULATION_SIZE = 5000;
+    private static final int STRAIGHT_WALL_AMOUNT = 3;
+    private static final int CIRCLE_WALL_AMOUNT = 3;
     private static final double ELITE_PERCENTAGE = 0.10;
-    private static final int GENERATION_DURATION_FRAMES = 10 * 60;
+    private static final int GENERATION_DURATION_FRAMES = 20 * 60;
     private int genFramesLeft;
     private int genCount;
 
@@ -59,56 +59,14 @@ public class GameManager {
     private void initLabyrinth() {
         straightWalls = new ArrayList<>();
         circleWalls = new ArrayList<>();
-        // generate and add 'STRAIGHT_WALL_AMOUNT' random straightWalls
-        for (int i = 0; i < STRAIGHT_WALL_AMOUNT; i++) {
-            straightWalls.add(new LineSegmentWall(
-                    new Vector2D(
-                            Math.random() * 1000,
-                            Math.random() * 800
-                    ),
-                    new Vector2D(
-                            Math.random() * 1000,
-                            Math.random() * 800
-                    )
-            ));
-        }
+
         // and the 4 world boundaries
-        straightWalls.add(new LineSegmentWall(new Vector2D(0, 0), new Vector2D(1, 800)));
+        straightWalls.add(new LineSegmentWall(new Vector2D(0, 0), new Vector2D(0, 800)));
         straightWalls.add(new LineSegmentWall(new Vector2D(0, 800), new Vector2D(1000, 0)));
-        straightWalls.add(new LineSegmentWall(new Vector2D(1000, 800), new Vector2D(1, -800)));
+        straightWalls.add(new LineSegmentWall(new Vector2D(1000, 800), new Vector2D(0, -1000)));
         straightWalls.add(new LineSegmentWall(new Vector2D(1000, 0), new Vector2D(-1000, 0)));
 
-        straightWalls.add(new LineSegmentWall(new Vector2D(300, 0), new Vector2D(1, 300)));
-        straightWalls.add(new LineSegmentWall(new Vector2D(300, 500), new Vector2D(1, 300)));
-
-
-        for (int i = 0; i < CIRCLE_WALL_AMOUNT; i++) {
-            circleWalls.add(getRandomCircleWall());
-        }
-    }
-
-    private CircleWall getRandomCircleWall() {
-        List<Double> allAngles = IntStream.rangeClosed(1, 35)
-                .map(i -> i * 10)
-                .mapToDouble(Math::toRadians)
-                .boxed()
-                .toList();
-
-        List<Double> randomAngles = new ArrayList<>(allAngles);
-        Collections.shuffle(randomAngles);
-
-        int segmentCount = 2 + (int)(Math.random() * 34);
-        randomAngles = randomAngles.subList(0, segmentCount);
-
-        randomAngles.addFirst(0.);
-        randomAngles.addLast(Math.TAU);
-
-        return new CircleWall(
-                500,
-                400,
-                50 + Math.random() * 350,
-                randomAngles.stream().sorted().toList()
-        );
+        MazeGenerator.generateAndSet(5, this);
     }
 
     /**
