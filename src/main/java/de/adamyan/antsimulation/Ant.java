@@ -14,8 +14,8 @@ public class Ant {
 
     /// Ant settings
     public static final int RAY_COUNT = 16;
-    public static final double MAX_RAY_TRAVEL_DISTANCE = 200;
-    public static final int MAX_ANT_SPEED = 5;
+    public static final double MAX_RAY_TRAVEL_DISTANCE = 100;
+    public static final int MAX_ANT_SPEED = 1;
     public static final double MAX_DELTA_ANGLE_PER_FRAME = Math.toRadians(10);
     public static final double FIELD_OF_VIEW_PERCENTAGE = 50 / 360.;
 

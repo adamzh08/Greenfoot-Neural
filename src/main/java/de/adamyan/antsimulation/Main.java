@@ -1,5 +1,7 @@
 package de.adamyan.antsimulation;
 
+import de.adamyan.antsimulation.Physics.LineSegmentWall;
+import de.adamyan.antsimulation.Physics.Vector2D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -32,10 +34,11 @@ public class Main extends Application {
 
     // ant settings fields
     private Text antAmountText;
-    private Text generationAmountText;
 
     // gen stats fields
     private Canvas antNetworkVisualisationCanvas;
+    private Text generationAmountText;
+    private Text timeLeftText;
 
     // ---------------------- other fields ---------------------------
     private GameManager gameManager;
@@ -130,13 +133,12 @@ public class Main extends Application {
         System.out.println("Logic: " + (System.nanoTime() - startTime) / 1e6 + "ms");
 
         Platform.runLater(() -> {
-            // Game window
-            fpsText.setText("FPS: " + Math.round(1000 / deltaTime));
-
             // Ant stats window
             antAmountText.setText("Ant count: " + gameManager.getAntPopulation().stream().filter(Objects::nonNull).count() + "/" + GameManager.POPULATION_SIZE);
 
             // gen stats window
+            timeLeftText.setText("Time left: " + gameManager.secondsLeft() + "s");
+            fpsText.setText("Fps: " + Math.round(1000 / deltaTime));
             if (genFinished) {
                 reDrawGenStatsWindow();
             }
@@ -166,8 +168,24 @@ public class Main extends Application {
 
     // ---------------------------- UI Window generator methods -----------------------------
 
+    Vector2D lineStartPos;
+    Vector2D lineEndPos;
+    boolean normalMode = true;
     public void generateWindow_main() {
         canvas = new Canvas(1000, 800);
+        canvas.setOnMouseClicked(mouseEvent -> {
+            if (normalMode) {
+                lineStartPos = new Vector2D(mouseEvent.getX(), mouseEvent.getY());
+                normalMode = false;
+            } else {
+                lineEndPos = new Vector2D(mouseEvent.getX(), mouseEvent.getY());
+                gameManager.getStraightWalls().add(new LineSegmentWall(
+                        lineStartPos,
+                        lineStartPos.subtractFrom(lineEndPos))
+                );
+                normalMode = true;
+            }
+        });
 
         Button resetButton = new Button("New simulation");
         resetButton.setScaleX(2);
@@ -176,17 +194,12 @@ public class Main extends Application {
         resetButton.setLayoutY(835.5);
         resetButton.setOnMouseClicked(mouseEvent -> start_simulation());
 
-        fpsText = new Text("FPS: undefined");
-        fpsText.setFont(new Font(20));
-        fpsText.setLayoutX(200);
-        fpsText.setLayoutY(850);
-
         Text goalText = new Text("Goal: be at the right wallVector when the time is over");
         goalText.setFont(new Font(20));
         goalText.setLayoutX(400);
         goalText.setLayoutY(850);
 
-        Stage mainStage = getWindow(1000, 900, canvas, resetButton, fpsText, goalText);
+        Stage mainStage = getWindow(1000, 900, canvas, resetButton, goalText);
         mainStage.setTitle("God simulator");
     }
 
@@ -229,7 +242,7 @@ public class Main extends Application {
         Stage antStatsStage = getWindow(500, 200, antAmountText, antRayAmount, antNetwork, antImage, toggleRaysButton);
         antStatsStage.setTitle("Ant settings");
         antStatsStage.setX(200);
-        antStatsStage.setY(600);
+        antStatsStage.setY(800);
 
         antStatsStage.show();
     }
@@ -242,13 +255,25 @@ public class Main extends Application {
         generationAmountText.setLayoutX(30);
         generationAmountText.setLayoutY(430);
 
+        timeLeftText = new Text("Time left: ?");
+        timeLeftText.setFont(new Font(30));
+        timeLeftText.setLayoutX(30);
+        timeLeftText.setLayoutY(470);
+
+        fpsText = new Text("Fps: ?");
+        fpsText.setFont(new Font(30));
+        fpsText.setLayoutX(30);
+        fpsText.setLayoutY(510);
+
+
         Button visibilityButton = new Button("Change visibility");
         visibilityButton.setLayoutX(250);
         visibilityButton.setLayoutY(400);
         visibilityButton.setFont(new Font(20));
         visibilityButton.setOnMouseClicked(mouseEvent -> changeVisibilityMode());
 
-        Stage genStatsStage = getWindow(500, 500, antNetworkVisualisationCanvas, generationAmountText, visibilityButton);
+
+        Stage genStatsStage = getWindow(500, 600, antNetworkVisualisationCanvas, generationAmountText, timeLeftText, visibilityButton, fpsText);
         genStatsStage.setX(200);
         genStatsStage.setY(100);
         genStatsStage.setTitle("Gen stats");

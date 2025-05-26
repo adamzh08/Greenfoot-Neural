@@ -12,11 +12,11 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * The whole game logic happens here
  */
+
 public class GameManager {
 
     private static final Image antImage = new Image("ant.png");
@@ -26,9 +26,7 @@ public class GameManager {
     public static boolean shouldDrawRays = false;
     /// ------------------ world settings ------------------
     public static final int POPULATION_SIZE = 5000;
-    private static final int STRAIGHT_WALL_AMOUNT = 3;
-    private static final int CIRCLE_WALL_AMOUNT = 3;
-    private static final double ELITE_PERCENTAGE = 0.10;
+    private static final double ELITE_PERCENTAGE = 0.01;
     private static final int GENERATION_DURATION_FRAMES = 20 * 60;
     private int genFramesLeft;
     private int genCount;
@@ -66,7 +64,9 @@ public class GameManager {
         straightWalls.add(new LineSegmentWall(new Vector2D(1000, 800), new Vector2D(0, -1000)));
         straightWalls.add(new LineSegmentWall(new Vector2D(1000, 0), new Vector2D(-1000, 0)));
 
-        MazeGenerator.generateAndSet(5, this);
+        MazeGenerator.setRadius(350);
+        MazeGenerator.setCenter(500, 400);
+        MazeGenerator.generateAndSet(10, this);
     }
 
     /**
@@ -115,10 +115,6 @@ public class GameManager {
         }
         gc.setFill(new Color(0, 1, 0, 0.5));
         gc.fillOval(bestAnt.getX() - 10, bestAnt.getY() - 10, 20, 20);
-
-        // display the time left in seconds
-        gc.setFont(new Font(50));
-        gc.fillText(genFramesLeft / 60 + "", 50, 50);
     }
 
     private void drawWalls(GraphicsContext gc) {
@@ -216,6 +212,9 @@ public class GameManager {
         antPopulation.set(antPopulation.indexOf(ant), null);
     }
 
+    public int secondsLeft() {
+        return genFramesLeft / 60;
+    }
     public List<LineSegmentWall> getStraightWalls() {
         return straightWalls;
     }

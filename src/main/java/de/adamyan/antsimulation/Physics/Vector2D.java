@@ -9,6 +9,10 @@ public class Vector2D {
         this.y = y;
     }
 
+    public Vector2D subtractFrom(Vector2D other) {
+        return new Vector2D(other.x() - x, other.y() - y);
+    }
+
     public double magnitudeSquared() {
         return x * x + y * y;
     }
