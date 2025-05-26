@@ -1,4 +1,4 @@
-package de.adamyan.antsimulation.Physics;
+package Physics;
 
 /**
  * Represents a straight wallVector as a line segment

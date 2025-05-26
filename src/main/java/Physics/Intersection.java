@@ -1,4 +1,4 @@
-package de.adamyan.antsimulation.Physics;
+package Physics;
 
 import java.util.ArrayList;
 import java.util.List;

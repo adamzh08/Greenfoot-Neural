@@ -5,13 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3346fcd-228e-453a-89a0-052032e72fb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/MazeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/MazeGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/CircleWall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/CircleWall.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Vector2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Vector2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Ant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GameUtils/Ant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GameUtils/GameManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/MazeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GameUtils/MazeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/ActivationFunction_I.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NN/ActivationFunction_I.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/ActivationFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NN/ActivationFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/Layer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NN/Layer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/NN/Network.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/NN/Network.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/CircleWall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Physics/CircleWall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Intersection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Physics/Intersection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/LineSegmentWall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Physics/LineSegmentWall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/RayCast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Physics/RayCast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Physics/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/de/adamyan/antsimulation/Physics/Vector2D.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Physics/Vector2D.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
@@ -37,12 +49,19 @@
     &quot;assignee&quot;: &quot;Yan1889&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:adamzh08/Greenfoot-Neural/",
-    "accountId": "ea9062ec-8b74-4401-85ce-fba0d4d07d24"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:adamzh08/Greenfoot-Neural/&quot;,
+    &quot;accountId&quot;: &quot;ea9062ec-8b74-4401-85ce-fba0d4d07d24&quot;
   }
-}]]></component>
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -58,16 +77,22 @@
     "Maven.AntSimulation [deploy].executor": "Run",
     "Maven.AntSimulation [package].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "JavaFX",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/yanam/IdeaProjects/greenfoot/Greenfoot-Neural - Kopie"
+    "last_opened_file_path": "C:/Users/yanam/IdeaProjects/greenfoot/Greenfoot-Neural - Kopie (2)"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
   <component name="RunManager" selected="Application.Normal">
     <configuration name="Normal" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="21" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="de.adamyan.antsimulation.Main" />
+      <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="AntSimulation" />
       <method v="2">
         <option name="Make" enabled="true" />

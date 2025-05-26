@@ -1,9 +1,10 @@
-package de.adamyan.antsimulation.Physics;
+package Physics;
 
-import de.adamyan.antsimulation.*;
+import GameUtils.GameManager;
 
 import java.util.List;
 import java.util.Optional;
+
 
 public record RayCast(
         double startX,

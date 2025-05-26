@@ -1,8 +1,8 @@
-package de.adamyan.antsimulation;
+package GameUtils;
 
-import de.adamyan.antsimulation.Physics.CircleWall;
-import de.adamyan.antsimulation.Physics.LineSegmentWall;
-import de.adamyan.antsimulation.Physics.Vector2D;
+import Physics.CircleWall;
+import Physics.LineSegmentWall;
+import Physics.Vector2D;
 
 import java.util.*;
 import java.util.stream.IntStream;

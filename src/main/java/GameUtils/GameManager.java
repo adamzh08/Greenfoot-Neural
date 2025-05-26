@@ -1,15 +1,14 @@
-package de.adamyan.antsimulation;
+package GameUtils;
 
-import de.adamyan.antsimulation.NN.Network;
-import de.adamyan.antsimulation.Physics.CircleWall;
-import de.adamyan.antsimulation.Physics.LineSegmentWall;
-import de.adamyan.antsimulation.Physics.Vector2D;
+import NN.Network;
+import Physics.CircleWall;
+import Physics.LineSegmentWall;
+import Physics.Vector2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
-import javafx.scene.text.Font;
 
 import java.util.*;
 

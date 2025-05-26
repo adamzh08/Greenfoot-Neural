@@ -1,4 +1,4 @@
-package de.adamyan.antsimulation.Physics;
+package Physics;
 
 public final class Utils {
     private Utils() {

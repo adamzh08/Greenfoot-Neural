@@ -1,7 +1,4 @@
-package de.adamyan.antsimulation.NN;
-
-import java.util.*;
-import java.io.*;
+package NN;
 
 /**
  * Represents a single layer in the neural network

@@ -1,7 +1,7 @@
-package de.adamyan.antsimulation;
+package GameUtils;
 
-import de.adamyan.antsimulation.NN.*;
-import de.adamyan.antsimulation.Physics.*;
+import NN.*;
+import Physics.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 public class Ant {
 
-    /// Ant settings
+    /// GameUtils.Ant settings
     public static final int RAY_COUNT = 16;
     public static final double MAX_RAY_TRAVEL_DISTANCE = 100;
     public static final int MAX_ANT_SPEED = 1;

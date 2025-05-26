@@ -1,4 +1,4 @@
-package de.adamyan.antsimulation.NN;
+package NN;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;

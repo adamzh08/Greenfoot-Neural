@@ -1,4 +1,4 @@
-package de.adamyan.antsimulation.Physics;
+package Physics;
 
 public class Vector2D {
     private double x;

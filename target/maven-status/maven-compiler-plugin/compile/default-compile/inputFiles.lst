@@ -1,15 +1,14 @@
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Ant.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\GameManager.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Main.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\MazeGenerator.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\NN\ActivationFunction_I.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\NN\ActivationFunctions.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\NN\Layer.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\NN\Network.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Physics\CircleWall.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Physics\Intersection.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Physics\LineSegmentWall.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Physics\RayCast.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Physics\Utils.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\de\adamyan\antsimulation\Physics\Vector2D.java
-C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural\src\main\java\module-info.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\GameUtils\Ant.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\GameUtils\GameManager.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\GameUtils\MazeGenerator.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Main.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\NN\ActivationFunction_I.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\NN\ActivationFunctions.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\NN\Layer.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\NN\Network.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Physics\CircleWall.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Physics\Intersection.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Physics\LineSegmentWall.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Physics\RayCast.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Physics\Utils.java
+C:\Users\yanam\IdeaProjects\greenfoot\Greenfoot-Neural - Kopie (2)\src\main\java\Physics\Vector2D.java

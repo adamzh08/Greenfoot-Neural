@@ -1,4 +1,4 @@
-package de.adamyan.antsimulation.NN;
+package NN;
 
 /**
  * Collection of activation functions for neural networks

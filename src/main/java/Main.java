@@ -1,11 +1,10 @@
-package de.adamyan.antsimulation;
-
-import de.adamyan.antsimulation.Physics.LineSegmentWall;
-import de.adamyan.antsimulation.Physics.Vector2D;
+import GameUtils.Ant;
+import GameUtils.GameManager;
+import Physics.LineSegmentWall;
+import Physics.Vector2D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -13,7 +12,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -46,6 +44,8 @@ public class Main extends Application {
     private AnimationTimer frameTimer_visible;
     private Timer frameTimer_invisible;
     private boolean visibleMode = true;
+
+    private final boolean shouldPrintTimes = false;
 
 
     private void start_simulation() {
@@ -130,11 +130,13 @@ public class Main extends Application {
     private void stuffThatHappensEveryFrame(double deltaTime, boolean shouldDraw) {
         double startTime = System.nanoTime();
         boolean genFinished = gameManager.frame_logic();
-        System.out.println("Logic: " + (System.nanoTime() - startTime) / 1e6 + "ms");
+        if (shouldPrintTimes) {
+            System.out.println("Logic: " + (System.nanoTime() - startTime) / 1e6 + "ms");
+        }
 
         Platform.runLater(() -> {
-            // Ant stats window
-            antAmountText.setText("Ant count: " + gameManager.getAntPopulation().stream().filter(Objects::nonNull).count() + "/" + GameManager.POPULATION_SIZE);
+            // GameUtils.Ant stats window
+            antAmountText.setText("GameUtils.Ant count: " + gameManager.getAntPopulation().stream().filter(Objects::nonNull).count() + "/" + GameManager.POPULATION_SIZE);
 
             // gen stats window
             timeLeftText.setText("Time left: " + gameManager.secondsLeft() + "s");
@@ -147,7 +149,9 @@ public class Main extends Application {
         if (shouldDraw) {
             startTime = System.nanoTime();
             gameManager.draw(canvas);
-            System.out.println("Draw: " + (System.nanoTime() - startTime) / 1e6 + "ms");
+            if (shouldPrintTimes) {
+                System.out.println("Draw: " + (System.nanoTime() - startTime) / 1e6 + "ms");
+            }
         }
     }
 
@@ -204,7 +208,7 @@ public class Main extends Application {
     }
 
     public void generateWidow_antSettings() {
-        antAmountText = new Text("Ant count: undefined");
+        antAmountText = new Text("GameUtils.Ant count: undefined");
         antAmountText.setFont(new Font(30));
         antAmountText.setLayoutX(30);
         antAmountText.setLayoutY(30);
@@ -240,7 +244,7 @@ public class Main extends Application {
 
 
         Stage antStatsStage = getWindow(500, 200, antAmountText, antRayAmount, antNetwork, antImage, toggleRaysButton);
-        antStatsStage.setTitle("Ant settings");
+        antStatsStage.setTitle("GameUtils.Ant settings");
         antStatsStage.setX(200);
         antStatsStage.setY(800);
 

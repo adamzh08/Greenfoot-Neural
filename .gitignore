@@ -1,3 +1,19 @@
 *.class
 
+# VSCode
 .vscode
+
+# Maven target folder (build output)
+target/
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# JavaFX native libs or caches
+*.dll
+*.exe
+*.so
+*.dylib
