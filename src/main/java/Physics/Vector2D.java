@@ -1,14 +1,6 @@
 package Physics;
 
-public class Vector2D {
-    private double x;
-    private double y;
-
-    public Vector2D(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
+public record Vector2D(double x, double y) {
     public Vector2D subtractFrom(Vector2D other) {
         return new Vector2D(other.x() - x, other.y() - y);
     }
@@ -16,54 +8,27 @@ public class Vector2D {
     public double magnitudeSquared() {
         return x * x + y * y;
     }
-
     public double magnitude() {
         return Math.sqrt(magnitudeSquared());
     }
+
     public double slope() {
         return y / x;
     }
-    public double angle() {
-        return Math.atan2(y, x);
+
+    public Vector2D addTo(Vector2D other) {
+        return new Vector2D(other.x + x, other.y + y);
     }
 
-    public void add(Vector2D other) {
-        x += other.x;
-        y += other.y;
+    public Vector2D scale(double scalar) {
+        return new Vector2D(x * scalar, y * scalar);
     }
 
-    public void scale(double scalar) {
-        x *= scalar;
-        y *= scalar;
+    public Vector2D normalized() {
+        return scale(1 / magnitude());
     }
-
-    public void normalize() {
-        scale(1 / magnitude());
-    }
-
-    public double x() {
-        return x;
-    }
-
-    public double y() {
-        return y;
-    }
-
-    public void setX(double newX) {
-        this.x = newX;
-    }
-    public void setY(double newY) {
-        this.y = newY;
-    }
-
-
 
     public static Vector2D ZERO() {
         return new Vector2D(0, 0);
-    }
-
-    @Override
-    public Vector2D clone() {
-        return new Vector2D(x, y);
     }
 }

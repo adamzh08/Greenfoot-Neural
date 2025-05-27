@@ -65,7 +65,7 @@ public class GameManager {
 
         MazeGenerator.setRadius(350);
         MazeGenerator.setCenter(500, 400);
-        MazeGenerator.generateAndSet(10, this);
+        MazeGenerator.generateAndSet(6, this);
     }
 
     /**

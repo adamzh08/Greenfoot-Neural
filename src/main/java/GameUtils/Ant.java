@@ -123,7 +123,7 @@ public class Ant {
         ).getIntersection(gameManager);
 
         if (intersection.isEmpty()) {
-            position.add(addedPosition);
+            position = addedPosition.addTo(position);
         } else {
             gameManager.disableAnt(this);
         }
@@ -156,7 +156,7 @@ public class Ant {
     public void resetGenerationSpecificFields() {
         amountOfWallCollisions = 0;
         rotationAngle = 0;
-        position = startPos.clone();
+        position = startPos;
     }
 
     public RayCast castWithIndex(int rayIdx) {

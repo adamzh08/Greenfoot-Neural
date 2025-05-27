@@ -13,8 +13,6 @@ public record LineSegmentWall(Vector2D startPos, Vector2D wallVector) {
         return startPos.y() - startPos.x() * slope();
     }
     public Vector2D endPos() {
-        Vector2D ret = startPos.clone();
-        ret.add(wallVector);
-        return ret;
+        return wallVector.addTo(startPos);
     }
 }
