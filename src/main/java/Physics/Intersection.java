@@ -14,7 +14,7 @@ public final class Intersection {
      * @param t1 y-Intercept of the first line
      * @param m2 slope of the second line
      * @param t2 y-Intercept of the second line
-     * @return the intersection coordinates {x, y} if there are any
+     * @return the intersection coordinates {x, y} between the lines if there are any
      */
     public static Optional<Vector2D> line_line(double m1, double t1, double m2, double t2) {
         if (Double.compare(m1, m2) == 0) {

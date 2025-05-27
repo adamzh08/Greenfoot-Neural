@@ -48,6 +48,9 @@ public class Main extends Application {
     private final boolean shouldPrintTimes = false;
 
 
+    /**
+     * This is where the game is initialized
+     */
     private void start_simulation() {
         gameManager = new GameManager();
 
@@ -80,6 +83,10 @@ public class Main extends Application {
     }
 
 
+    /**
+     * This method is called every time 'change visibility' is clicked.
+     * It stops one timer and starts the other
+     */
     private void changeVisibilityMode() {
         visibleMode = !visibleMode;
 
@@ -134,6 +141,7 @@ public class Main extends Application {
             System.out.println("Logic: " + (System.nanoTime() - startTime) / 1e6 + "ms");
         }
 
+        // if this isn't in the JavaFX application Thread
         Platform.runLater(() -> {
             // GameUtils.Ant stats window
             antAmountText.setText("GameUtils.Ant count: " + gameManager.getAntPopulation().stream().filter(Objects::nonNull).count() + "/" + GameManager.POPULATION_SIZE);
@@ -175,6 +183,14 @@ public class Main extends Application {
     Vector2D lineStartPos;
     Vector2D lineEndPos;
     boolean normalMode = true;
+
+    /**
+     * Here the main window ist created and launched
+     * <p>It is used for displaying:</p>
+     * <ul>
+     *     <li>The game</li>
+     * </ul>
+     */
     public void generateWindow_main() {
         canvas = new Canvas(1000, 800);
         canvas.setOnMouseClicked(mouseEvent -> {
@@ -198,7 +214,7 @@ public class Main extends Application {
         resetButton.setLayoutY(835.5);
         resetButton.setOnMouseClicked(mouseEvent -> start_simulation());
 
-        Text goalText = new Text("Goal: be at the right wallVector when the time is over");
+        Text goalText = new Text("Goal: be at the right wall when the time is over");
         goalText.setFont(new Font(20));
         goalText.setLayoutX(400);
         goalText.setLayoutY(850);
@@ -207,8 +223,17 @@ public class Main extends Application {
         mainStage.setTitle("God simulator");
     }
 
+    /**
+     * Here the window with the ant stats is created and launched
+     * <p>It is used for displaying:</p>
+     * <ul>
+     *     <li>current ant count</li>
+     *     <li>ant network topology</li>
+     *     <li>ant ray count</li>
+     * </ul>
+     */
     public void generateWidow_antSettings() {
-        antAmountText = new Text("GameUtils.Ant count: undefined");
+        antAmountText = new Text("Ant count: undefined");
         antAmountText.setFont(new Font(30));
         antAmountText.setLayoutX(30);
         antAmountText.setLayoutY(30);
@@ -244,13 +269,24 @@ public class Main extends Application {
 
 
         Stage antStatsStage = getWindow(500, 200, antAmountText, antRayAmount, antNetwork, antImage, toggleRaysButton);
-        antStatsStage.setTitle("GameUtils.Ant settings");
+        antStatsStage.setTitle("Ant settings");
         antStatsStage.setX(200);
         antStatsStage.setY(800);
-
-        antStatsStage.show();
     }
 
+    /**
+     * Here the window with the generation stats is created and launched
+     * <p>It is used for displaying:</p>
+     * <ul>
+     *     <li>
+     *         network of the best performing ant in the last generation
+     *     </li>
+     *     <li>
+     *          the number of generations passed
+     *      </li>
+     * </ul>
+     * <p></p>
+     */
     public void generateWindow_genStats() {
         antNetworkVisualisationCanvas = new Canvas(500, 400);
 
@@ -283,6 +319,12 @@ public class Main extends Application {
         genStatsStage.setTitle("Gen stats");
     }
 
+    /**
+     * @param width width of the new window
+     * @param height height of the new window
+     * @param nodes children
+     * @return a stage (=window) with the specified dimensions and a 'Group' root node
+     */
     public Stage getWindow(int width, int height, Node... nodes) {
         Group root = new Group(nodes);
         Scene scene = new Scene(root, width, height);

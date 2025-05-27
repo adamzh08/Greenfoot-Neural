@@ -40,8 +40,6 @@ public class Ant {
     private Vector2D position;
     private double rotationAngle;
 
-    private int amountOfWallCollisions;
-
     public Ant(GameManager gameManager) {
         this.gameManager = gameManager;
 
@@ -147,14 +145,11 @@ public class Ant {
         }
     }
 
-    public double getReward() {
-        double progress = getX() / 1000;
-
-        return progress - 0.3 * amountOfWallCollisions;
+    public double calculateReward() {
+        return getX() / 1000;
     }
 
     public void resetGenerationSpecificFields() {
-        amountOfWallCollisions = 0;
         rotationAngle = 0;
         position = startPos;
     }

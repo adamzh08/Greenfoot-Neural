@@ -5,6 +5,8 @@ public final class Utils {
         throw new UnsupportedOperationException();
     }
 
+    public static final double EPSILON = 1e-10;
+
     public static double distSquared(double x, double y) {
         return x * x + y * y;
     }

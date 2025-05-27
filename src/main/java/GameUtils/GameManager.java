@@ -23,7 +23,7 @@ public class GameManager {
 
     /// Debug/Test tool to see the rays
     public static boolean shouldDrawRays = false;
-    /// ------------------ world settings ------------------
+    // ------------------ world settings ------------------
     public static final int POPULATION_SIZE = 5000;
     private static final double ELITE_PERCENTAGE = 0.01;
     private static final int GENERATION_DURATION_FRAMES = 20 * 60;
@@ -33,10 +33,7 @@ public class GameManager {
     private List<Ant> antPopulation;
     private Ant bestAnt;
 
-    /**
-     * Collection of all straight straightWalls in the game
-     * Great because: Ray interceptions point can be computed fast with a few math operations and no loops
-     */
+
     private List<LineSegmentWall> straightWalls;
     private List<CircleWall> circleWalls;
 
@@ -47,6 +44,7 @@ public class GameManager {
         for (int i = 0; i < POPULATION_SIZE; i++) {
             antPopulation.add(new Ant(this));
         }
+        // random ant at the beginning
         bestAnt = antPopulation.getFirst();
 
         genCount = 0;
@@ -108,6 +106,7 @@ public class GameManager {
         if (shouldDrawRays) {
             for (Ant ant : antPopulation) {
                 if (ant != null) {
+                    // extra compute but ok (only for debug)
                     ant.draw_rays(canvas.getGraphicsContext2D());
                 }
             }
@@ -135,7 +134,7 @@ public class GameManager {
                     double startRad = angles.get(i);
                     double endRad = angles.get(i + 1);
 
-                    double startDeg = Math.toDegrees(-startRad); // Negative for clockwise
+                    double startDeg = Math.toDegrees(-startRad);
                     double extentDeg = Math.toDegrees(-(endRad - startRad));
 
                     gc.strokeArc(
@@ -156,7 +155,7 @@ public class GameManager {
      * Here the whole logic for 'natural selection', 'gene combination' and mutation happens
      */
     private void finishGen() {
-        List<Ant> antsAlive = antPopulation.stream().filter(Objects::nonNull).sorted((ant1, ant2) -> Double.compare(ant2.getReward(), ant1.getReward())).toList();
+        List<Ant> antsAlive = antPopulation.stream().filter(Objects::nonNull).sorted((ant1, ant2) -> Double.compare(ant2.calculateReward(), ant1.calculateReward())).toList();
 
         int firstNonEliteIndex = (int) (POPULATION_SIZE * ELITE_PERCENTAGE);
         firstNonEliteIndex = antsAlive.size() < firstNonEliteIndex? antPopulation.size() : firstNonEliteIndex;
@@ -170,7 +169,7 @@ public class GameManager {
             Ant dadAnt = getBestAntOfKRandom(antsAlive, 20);
 
             Ant childAnt = new Ant(this);
-            childAnt.setNetwork(new Network(momAnt.getNetwork(), dadAnt.getNetwork(), momAnt.getReward() > dadAnt.getReward() ? 0.35 : 0.65));
+            childAnt.setNetwork(new Network(momAnt.getNetwork(), dadAnt.getNetwork(), momAnt.calculateReward() > dadAnt.calculateReward() ? 0.35 : 0.65));
             childAnt.getNetwork().mutate(0.05, 0.4);
 
             antPopulation.set(i, childAnt);
@@ -178,6 +177,12 @@ public class GameManager {
         antPopulation.forEach(Ant::resetGenerationSpecificFields);
     }
 
+    /**
+     * Implements tournament selection
+     * @param antPool the pool of ants that can be chosen from
+     * @param k the amount of samples taken
+     * @return the ant with the highest reward among 'k' random ants from the pool
+     */
     private Ant getBestAntOfKRandom(List<Ant> antPool, int k) {
         Ant bestAnt = null;
         double largestRewardSoFar = Double.NEGATIVE_INFINITY;
@@ -185,7 +190,7 @@ public class GameManager {
             Ant randomAnt = antPool.get((int) (
                     Math.random() * antPool.size()
             ));
-            double reward = randomAnt.getReward();
+            double reward = randomAnt.calculateReward();
 
             if (reward > largestRewardSoFar) {
                 largestRewardSoFar = reward;
@@ -207,6 +212,10 @@ public class GameManager {
         }
     }
 
+    /**
+     * Ant instances that die call this method
+     * @param ant the dead ant that needs to be removed
+     */
     public void disableAnt(Ant ant) {
         antPopulation.set(antPopulation.indexOf(ant), null);
     }

@@ -103,6 +103,6 @@ public record RayCast(
 
 
     private boolean rightDirection(Vector2D intersection) {
-        return ((intersection.x() - startX) * cosAngle + (intersection.y() - startY) * sinAngle) > 0;
+        return ((intersection.x() - startX) * cosAngle + (intersection.y() - startY) * sinAngle) >= 0;
     }
 }

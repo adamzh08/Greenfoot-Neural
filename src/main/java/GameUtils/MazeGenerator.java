@@ -7,6 +7,9 @@ import Physics.Vector2D;
 import java.util.*;
 import java.util.stream.IntStream;
 
+/**
+ * You don't have to understand this class
+ */
 public class MazeGenerator {
 
     private static boolean[][] canWalkFromNodeToNode;
